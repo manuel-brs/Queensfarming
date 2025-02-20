@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>queensfarming-plugin-database</artifactId>
+    <artifactId>queensfarming-plugin</artifactId>
 
     <dependencies>
         <dependency>

@@ -7,8 +7,8 @@
     <file url="file://$PROJECT_DIR$/queensfarming-application/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/queensfarming-domain/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/queensfarming-domain/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/queensfarming-plugin-database/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/queensfarming-plugin-database/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/queensfarming-plugin/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/queensfarming-plugin/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>

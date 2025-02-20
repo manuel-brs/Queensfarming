@@ -6,9 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="queensfarming-plugin-database" />
         <module name="queensfarming-adapters" />
         <module name="queensfarming-application" />
+        <module name="queensfarming-plugin" />
         <module name="queensfarming-domain" />
       </profile>
     </annotationProcessing>

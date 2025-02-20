@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>queensfarming-plugin-database</module>
+        <module>queensfarming-plugin</module>
         <module>queensfarming-adapters</module>
         <module>queensfarming-application</module>
         <module>queensfarming-domain</module>
