@@ -5,7 +5,7 @@ import de.dhbw.ase.Gemüse.Gemüsename;
 
 public class Großesfeld extends Kachel{
     public Großesfeld() {
-        super(8, new Gemüse[]{new Gemüse(Gemüsename.SALAT), new Gemüse(Gemüsename.KAROTTEN)});
+        super(8, new Gemüse[]{new Gemüse(Gemüsename.SALAT), new Gemüse(Gemüsename.KAROTTEN)}, "Großesfeld");
 
     }
 }

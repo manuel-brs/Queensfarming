@@ -5,6 +5,6 @@ import de.dhbw.ase.Gemüse.Gemüsename;
 
 public class Feld extends Kachel{
     public Feld() {
-        super(4, new Gemüse[]{new Gemüse(Gemüsename.SALAT), new Gemüse(Gemüsename.KAROTTEN)});
+        super(4, new Gemüse[]{new Gemüse(Gemüsename.SALAT), new Gemüse(Gemüsename.KAROTTEN)}, "Feld");
     }
 }

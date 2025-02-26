@@ -5,6 +5,6 @@ import de.dhbw.ase.Gemüse.Gemüsename;
 
 public class Großerwald extends Kachel{
     public Großerwald() {
-        super(8, new Gemüse[]{new Gemüse(Gemüsename.PILZE)});
+        super(8, new Gemüse[]{new Gemüse(Gemüsename.PILZE)}, "Großerwald");
     }
 }

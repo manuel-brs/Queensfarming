@@ -11,7 +11,7 @@ public class Scheune extends Kachel {
     private Map<Gemüsename, Integer> inventar = new HashMap<>();
 
     public Scheune() {
-        super(-1, new Gemüse[]{new Gemüse(Gemüsename.SALAT), new Gemüse(Gemüsename.KAROTTEN), new Gemüse(Gemüsename.TOMATEN), new Gemüse(Gemüsename.PILZE)});
+        super(-1, new Gemüse[]{new Gemüse(Gemüsename.SALAT), new Gemüse(Gemüsename.KAROTTEN), new Gemüse(Gemüsename.TOMATEN), new Gemüse(Gemüsename.PILZE)}, "Scheune");
         inventar.put(Gemüsename.KAROTTEN, 0);
         inventar.put(Gemüsename.TOMATEN, 0);
         inventar.put(Gemüsename.SALAT, 0);

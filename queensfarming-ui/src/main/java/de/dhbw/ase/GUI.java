@@ -44,7 +44,7 @@ public class GUI {
 
         //textarea barn
         barn = new TextArea();
-        Scheune scheune = (Scheune) gameController.getSpiel().spieler.get(gameController.getSpiel().spieleramzug).getSpielfeld().spielfeld[5][0];
+        Scheune scheune = (Scheune) gameController.getSpiel().spieler.get(gameController.getSpiel().spieleramzug).getSpielfeld().spielfeld[4][2];
         barn.setText("Karotten: " + scheune.getInventar().get(Gemüsename.KAROTTEN) + "\n\nTomaten: " + scheune.getInventar().get(Gemüsename.TOMATEN) + " \n\nPilze: " + scheune.getInventar().get(Gemüsename.PILZE) + " \n\nSalat: " + scheune.getInventar().get(Gemüsename.SALAT) + "\n\nGold: " + gameController.getSpiel().aktuellerSpieler.anzahlGold);
         barn.setBackground(Color.white);
         barn.setBounds (50, 50, 250, 400);
@@ -145,6 +145,7 @@ public class GUI {
         frame.add(mushroomcheck);
         frame.add(tomatocheck);
         frame.add(currentPlayerLabel);
+        maleSpielfeldNeu(gameController.getSpiel().aktuellerSpieler.spielfeld);
     }
 
     private void plant(ActionEvent event) {
@@ -184,12 +185,27 @@ public class GUI {
 
     private void changePlayer(ActionEvent event) {
         gameController.changePlayer();
-        Scheune scheune = (Scheune) gameController.getSpiel().spieler.get(gameController.getSpiel().spieleramzug).getSpielfeld().spielfeld[5][0];
+        Scheune scheune = (Scheune) gameController.getSpiel().spieler.get(gameController.getSpiel().spieleramzug).getSpielfeld().spielfeld[4][2];
         barn.setText("Karotten: " + scheune.getInventar().get(Gemüsename.KAROTTEN) + "\n\nTomaten: " + scheune.getInventar().get(Gemüsename.TOMATEN) + " \n\nPilze: " + scheune.getInventar().get(Gemüsename.PILZE) + " \n\nSalat: " + scheune.getInventar().get(Gemüsename.SALAT) + "\n\nGold: " + gameController.getSpiel().aktuellerSpieler.anzahlGold);
         setzeAktuellerSpieler(this.gameController.getSpiel().spieler.get(gameController.getSpiel().spieleramzug));
+        maleSpielfeldNeu(this.gameController.getSpiel().spieler.get(gameController.getSpiel().spieleramzug).spielfeld);
     }
 
     private void setzeAktuellerSpieler(Spieler aktuellerSpieler) {
         currentPlayerLabel.setText("Spieler: " + aktuellerSpieler.name + " ist am Zug");
+    }
+
+    private void maleSpielfeldNeu(Spielfeld spielfeld) {
+        for (int i = 0; i < spielfeld.spielfeld.length; i++) {
+            for (int j = 0; j < spielfeld.spielfeld[i].length; j++) {
+                if(spielfeld.spielfeld[i][j] != null) {
+                    kachel[i][j].setText(spielfeld.spielfeld[i][j].getName());
+                    kachel[i][j].setBackground(Color.gray);
+                    kachel[i][j].setEnabled(true);
+                }
+            }
+        }
+        frame.revalidate();
+        frame.repaint();
     }
 }
