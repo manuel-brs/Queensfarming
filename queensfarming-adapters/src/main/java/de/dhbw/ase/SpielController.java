@@ -1,5 +1,7 @@
 package de.dhbw.ase;
 
+import de.dhbw.ase.Gemüse.Gemüsename;
+
 public class SpielController {
     private final Spiel spiel;
 
@@ -7,27 +9,27 @@ public class SpielController {
         this.spiel = spiel;
     }
 
-    public void plant(int x, int y, String vegetable) {
+    public void pflanzen(int x, int y, Gemüsename vegetable) {
 
     }
 
-    public void harvest(int x, int y) {
+    public void ernten(int x, int y) {
 
     }
 
-    public void sell(String vegetable) {
+    public void verkaufeGemüse(Gemüsename vegetable) {
 
     }
 
-    public void buyLand(int x, int y) {
+    public void kaufeLand(int x, int y) {
 
     }
 
-    public void buyVegetable(String vegetable) {
-
+    public void kaufeGemüse(Gemüsename vegetable) {
+        spiel.kaufeGemüse(vegetable);
     }
 
-    public void changePlayer() {
+    public void wechselSpieler() {
         spiel.beendeZug();
     }
 

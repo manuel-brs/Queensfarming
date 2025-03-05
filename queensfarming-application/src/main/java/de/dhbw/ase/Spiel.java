@@ -1,5 +1,8 @@
 package de.dhbw.ase;
 
+import de.dhbw.ase.Gemüse.Gemüsename;
+import de.dhbw.ase.Kachel.Scheune;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +44,22 @@ public class Spiel {
         else {
             spieleramzug = 0;
             this.aktuellerSpieler = spieler.get(spieleramzug);
+        }
+    }
+
+    public void kaufeGemüse(Gemüsename vegetable) {
+        try {
+            KaufErgebnis kaufErgebnis= markt.kaufeGemüse(vegetable);
+            if (spieler.get(spieleramzug).anzahlGold < kaufErgebnis.getPreis()) {
+                markt.verkaufeGemüse(vegetable);
+
+            } else {
+                spieler.get(spieleramzug).anzahlGold -= kaufErgebnis.getPreis();
+                Scheune scheune = (Scheune) spieler.get(spieleramzug).getSpielfeld().getSpielfeld()[4][2];
+                scheune.getInventar().put(vegetable, scheune.getInventar().get(vegetable) + 1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 }
