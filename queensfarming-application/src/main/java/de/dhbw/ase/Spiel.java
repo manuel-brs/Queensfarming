@@ -8,6 +8,7 @@ import java.util.List;
 
 public class Spiel {
     public static int ZIELGOLD;
+    private String message;
     private static Spiel instance;
 
     private List<IObserver> observers = new ArrayList<>();
@@ -67,6 +68,8 @@ public class Spiel {
             KaufErgebnis kaufErgebnis= markt.kaufeGemüse(vegetable);
             if (spieler.get(spieleramzug).anzahlGold < kaufErgebnis.getPreis()) {
                 markt.verkaufeGemüse(vegetable);
+                message = "Du hast nicht genug Geld um das Gemüse zu kaufen.";
+                SpielController.getInstance().notifyObservers();
             } else {
                 spieler.get(spieleramzug).anzahlGold -= kaufErgebnis.getPreis();
                 Scheune scheune = (Scheune) spieler.get(spieleramzug).getSpielfeld().getSpielfeld()[4][2];
@@ -120,5 +123,13 @@ public class Spiel {
 
     public int getZielGold() {
         return zielGold;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

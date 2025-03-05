@@ -240,6 +240,18 @@ public class GUI implements IObserver {
 
     @Override
     public void update() {
+        String message = Spiel.getInstance().getMessage();
+        if (!message.isEmpty()) {
+            JOptionPane popup = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE);
+            JDialog dialog = popup.createDialog(frame, "Nachricht");
+
+            // Starte einen Timer, um das Pop-up nach 3 Sekunden zu schließen
+            new Timer(5000, e -> dialog.dispose()).start();
+
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.setVisible(true);
+        }
         maleSpielfeldNeu(Spiel.getInstance().getAktuellerSpieler().getSpielfeld());
+        Spiel.getInstance().setMessage("");
     }
 }

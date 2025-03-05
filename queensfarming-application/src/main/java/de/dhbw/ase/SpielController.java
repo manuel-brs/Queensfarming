@@ -5,7 +5,6 @@ import java.util.List;
 
 public class SpielController implements ISubjekt {
     private final List<IObserver> observers = new ArrayList<>();
-
     private static SpielController instance;
 
     private SpielController() {}
