@@ -34,6 +34,7 @@ public class Starter {
         // Zielgold abfragen
         System.out.print("Mit wie viel Gold gewinnt ein Spieler?\n> ");
         int goalGold = scanner.nextInt();
+        Spiel.ZIELGOLD = goalGold;
         scanner.nextLine();
 
 
@@ -53,9 +54,9 @@ public class Starter {
 
         scanner.close();
 
-        Spiel spiel = new Spiel(goalGold);
+        Spiel spiel = Spiel.getInstance();
         players.forEach(spiel::spielerHinzufügen);
         spiel.startSpiel();
-        new GUI(new SpielController(spiel));
+        new GUI();
     }
 }

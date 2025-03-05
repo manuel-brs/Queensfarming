@@ -10,7 +10,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>queensfarming-ui</module>
-        <module>queensfarming-adapters</module>
         <module>queensfarming-application</module>
         <module>queensfarming-domain</module>
     </modules>

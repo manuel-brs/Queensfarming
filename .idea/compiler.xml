@@ -7,12 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="queensfarming-ui" />
-        <module name="queensfarming-adapters" />
         <module name="queensfarming-application" />
         <module name="queensfarming-domain" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="queensfarming-adapters" target="19" />
       <module name="ui" target="19" />
     </bytecodeTargetLevel>
   </component>

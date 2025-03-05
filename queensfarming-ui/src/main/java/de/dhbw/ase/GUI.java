@@ -11,7 +11,7 @@ import java.awt.event.ItemListener;
 
 import static javax.swing.BorderFactory.createLineBorder;
 
-public class GUI {
+public class GUI implements IObserver {
     static private JTextField x;
     static private JTextField y;
     static private JLabel output;
@@ -25,8 +25,9 @@ public class GUI {
     static private TextArea kachel[][];
     private final SpielController gameController;
     static JLabel currentPlayerLabel;
-    public GUI(SpielController gameController) {
-        this.gameController = gameController;
+    public GUI() {
+        this.gameController = SpielController.getInstance();
+        this.gameController.registerObserver(this);
         initComponents();
     }
     private void initComponents() {
@@ -41,14 +42,14 @@ public class GUI {
             }
         }
         currentPlayerLabel = new JLabel();
-        setzeAktuellerSpieler(this.gameController.getSpiel().spieler.get(0));
+        setzeAktuellerSpieler(Spiel.getInstance().getSpieler().get(0));
         currentPlayerLabel.setBounds(50, 20, 250, 30);
 
 
         //textarea barn
         barn = new TextArea();
-        Scheune scheune = (Scheune) gameController.getSpiel().spieler.get(gameController.getSpiel().spieleramzug).getSpielfeld().getSpielfeld()[4][2];
-        barn.setText("Karotten: " + scheune.getInventar().get(Gemüsename.KAROTTEN) + "\n\nTomaten: " + scheune.getInventar().get(Gemüsename.TOMATEN) + " \n\nPilze: " + scheune.getInventar().get(Gemüsename.PILZE) + " \n\nSalat: " + scheune.getInventar().get(Gemüsename.SALAT) + "\n\nGold: " + gameController.getSpiel().aktuellerSpieler.anzahlGold);
+        Scheune scheune = (Scheune) Spiel.getInstance().getSpieler().get(Spiel.getInstance().getSpieleramzug()).getSpielfeld().getSpielfeld()[4][2];
+        barn.setText("Karotten: " + scheune.getInventar().get(Gemüsename.KAROTTEN) + "\n\nTomaten: " + scheune.getInventar().get(Gemüsename.TOMATEN) + " \n\nPilze: " + scheune.getInventar().get(Gemüsename.PILZE) + " \n\nSalat: " + scheune.getInventar().get(Gemüsename.SALAT) + "\n\nGold: " + Spiel.getInstance().getAktuellerSpieler().anzahlGold);
         barn.setBackground(Color.white);
         barn.setBounds (50, 50, 250, 400);
         barn.setEnabled(false);
@@ -97,16 +98,16 @@ public class GUI {
 
 
         //vegetables
-        saladcheck = new JCheckBox("salad (" + gameController.getSpiel().markt.getPreissalad() + " gold)");
+        saladcheck = new JCheckBox("salad (" + Spiel.getInstance().getMarkt().getPreissalad() + " gold)");
         saladcheck.setBounds(700, 700, 200, 20);
         //saladcheck.setVisible(false);
-        carotcheck = new JCheckBox("carot (" + gameController.getSpiel().markt.getPreiskarrote() + " gold)");
+        carotcheck = new JCheckBox("carot (" + Spiel.getInstance().getMarkt().getPreiskarrote() + " gold)");
         carotcheck.setBounds(700, 750, 200, 20);
         //carotcheck.setVisible(false);
-        mushroomcheck = new JCheckBox("mushroom (" + gameController.getSpiel().markt.getPreispilz() + " gold)");
+        mushroomcheck = new JCheckBox("mushroom (" + Spiel.getInstance().getMarkt().getPreispilz() + " gold)");
         mushroomcheck.setBounds(700, 800, 200, 20);
         //mushroomcheck.setVisible(false);
-        tomatocheck = new JCheckBox("tomato (" + gameController.getSpiel().markt.getPreistomate() + " gold)");
+        tomatocheck = new JCheckBox("tomato (" + Spiel.getInstance().getMarkt().getPreistomate() + " gold)");
         tomatocheck.setBounds(700, 850, 200, 20);
         //tomatocheck.setVisible(false);
 
@@ -164,51 +165,50 @@ public class GUI {
         frame.add(mushroomcheck);
         frame.add(tomatocheck);
         frame.add(currentPlayerLabel);
-        maleSpielfeldNeu(gameController.getSpiel().aktuellerSpieler.spielfeld);
+
+        maleSpielfeldNeu(Spiel.getInstance().getSpieler().get(Spiel.getInstance().getSpieleramzug()).getSpielfeld());
     }
 
     private void plant(ActionEvent event) {
         int posX = Integer.parseInt(x.getText());
         int posY = Integer.parseInt(y.getText());
-        if (saladcheck.isSelected()) gameController.pflanzen(posX, posY, Gemüsename.SALAT);
-        if (carotcheck.isSelected()) gameController.pflanzen(posX, posY, Gemüsename.KAROTTEN);
-        if (mushroomcheck.isSelected()) gameController.pflanzen(posX, posY, Gemüsename.PILZE);
-        if (tomatocheck.isSelected()) gameController.pflanzen(posX, posY, Gemüsename.TOMATEN);
+        if (saladcheck.isSelected()) Spiel.getInstance().pflanzen(posX, posY, Gemüsename.SALAT);
+        if (carotcheck.isSelected()) Spiel.getInstance().pflanzen(posX, posY, Gemüsename.KAROTTEN);
+        if (mushroomcheck.isSelected()) Spiel.getInstance().pflanzen(posX, posY, Gemüsename.PILZE);
+        if (tomatocheck.isSelected()) Spiel.getInstance().pflanzen(posX, posY, Gemüsename.TOMATEN);
     }
 
     private void harvest(ActionEvent event) {
         int posX = Integer.parseInt(x.getText());
         int posY = Integer.parseInt(y.getText());
-        gameController.ernten(posX, posY);
+        Spiel.getInstance().ernten(posX, posY);
     }
 
     private void sell(ActionEvent event) {
-        if (saladcheck.isSelected()) gameController.verkaufeGemüse(Gemüsename.SALAT);
-        if (carotcheck.isSelected()) gameController.verkaufeGemüse(Gemüsename.KAROTTEN);
-        if (mushroomcheck.isSelected()) gameController.verkaufeGemüse(Gemüsename.PILZE);
-        if (tomatocheck.isSelected()) gameController.verkaufeGemüse(Gemüsename.TOMATEN);
+        if (saladcheck.isSelected()) Spiel.getInstance().verkaufeGemüse(Gemüsename.SALAT);
+        if (carotcheck.isSelected()) Spiel.getInstance().verkaufeGemüse(Gemüsename.KAROTTEN);
+        if (mushroomcheck.isSelected()) Spiel.getInstance().verkaufeGemüse(Gemüsename.PILZE);
+        if (tomatocheck.isSelected()) Spiel.getInstance().verkaufeGemüse(Gemüsename.TOMATEN);
     }
 
     private void buyland(ActionEvent event) {
         int posX = Integer.parseInt(x.getText());
         int posY = Integer.parseInt(y.getText());
-        gameController.kaufeLand(posX, posY);
+        Spiel.getInstance().kaufeLand(posX, posY);
     }
 
     private void buyvegetable(ActionEvent event) {
-        if (saladcheck.isSelected()) gameController.kaufeGemüse(Gemüsename.SALAT);
-        if (carotcheck.isSelected()) gameController.kaufeGemüse(Gemüsename.KAROTTEN);
-        if (mushroomcheck.isSelected()) gameController.kaufeGemüse(Gemüsename.PILZE);
-        if (tomatocheck.isSelected()) gameController.kaufeGemüse(Gemüsename.TOMATEN);
-        maleSpielfeldNeu(this.gameController.getSpiel().aktuellerSpieler.spielfeld);
+        if (saladcheck.isSelected()) Spiel.getInstance().kaufeGemüse(Gemüsename.SALAT);
+        if (carotcheck.isSelected()) Spiel.getInstance().kaufeGemüse(Gemüsename.KAROTTEN);
+        if (mushroomcheck.isSelected()) Spiel.getInstance().kaufeGemüse(Gemüsename.PILZE);
+        if (tomatocheck.isSelected()) Spiel.getInstance().kaufeGemüse(Gemüsename.TOMATEN);
     }
 
     private void changePlayer(ActionEvent event) {
-        gameController.wechselSpieler();
-        Scheune scheune = (Scheune) gameController.getSpiel().spieler.get(gameController.getSpiel().spieleramzug).getSpielfeld().getSpielfeld()[4][2];
-        barn.setText("Karotten: " + scheune.getInventar().get(Gemüsename.KAROTTEN) + "\n\nTomaten: " + scheune.getInventar().get(Gemüsename.TOMATEN) + " \n\nPilze: " + scheune.getInventar().get(Gemüsename.PILZE) + " \n\nSalat: " + scheune.getInventar().get(Gemüsename.SALAT) + "\n\nGold: " + gameController.getSpiel().aktuellerSpieler.anzahlGold);
-        setzeAktuellerSpieler(this.gameController.getSpiel().spieler.get(gameController.getSpiel().spieleramzug));
-        maleSpielfeldNeu(this.gameController.getSpiel().spieler.get(gameController.getSpiel().spieleramzug).spielfeld);
+        Spiel.getInstance().beendeZug();
+        Scheune scheune = (Scheune) Spiel.getInstance().getSpieler().get(Spiel.getInstance().getSpieleramzug()).getSpielfeld().getSpielfeld()[4][2];
+        barn.setText("Karotten: " + scheune.getInventar().get(Gemüsename.KAROTTEN) + "\n\nTomaten: " + scheune.getInventar().get(Gemüsename.TOMATEN) + " \n\nPilze: " + scheune.getInventar().get(Gemüsename.PILZE) + " \n\nSalat: " + scheune.getInventar().get(Gemüsename.SALAT) + "\n\nGold: " + Spiel.getInstance().getAktuellerSpieler().anzahlGold);
+        setzeAktuellerSpieler(Spiel.getInstance().getSpieler().get(Spiel.getInstance().getSpieleramzug()));
     }
 
     private void setzeAktuellerSpieler(Spieler aktuellerSpieler) {
@@ -225,16 +225,21 @@ public class GUI {
                 }
             }
         }
-        Scheune scheune = (Scheune) gameController.getSpiel().spieler.get(gameController.getSpiel().spieleramzug).getSpielfeld().getSpielfeld()[4][2];
-        barn.setText("Karotten: " + scheune.getInventar().get(Gemüsename.KAROTTEN) + "\n\nTomaten: " + scheune.getInventar().get(Gemüsename.TOMATEN) + " \n\nPilze: " + scheune.getInventar().get(Gemüsename.PILZE) + " \n\nSalat: " + scheune.getInventar().get(Gemüsename.SALAT) + "\n\nGold: " + gameController.getSpiel().aktuellerSpieler.anzahlGold);
+        Scheune scheune = (Scheune) Spiel.getInstance().getSpieler().get(Spiel.getInstance().getSpieleramzug()).getSpielfeld().getSpielfeld()[4][2];
+        barn.setText("Karotten: " + scheune.getInventar().get(Gemüsename.KAROTTEN) + "\n\nTomaten: " + scheune.getInventar().get(Gemüsename.TOMATEN) + " \n\nPilze: " + scheune.getInventar().get(Gemüsename.PILZE) + " \n\nSalat: " + scheune.getInventar().get(Gemüsename.SALAT) + "\n\nGold: " + Spiel.getInstance().getAktuellerSpieler().anzahlGold);
 
         //vegetables
-        saladcheck.setText("salad (" + gameController.getSpiel().markt.getPreissalad() + " gold)");
-        carotcheck.setText("carot (" + gameController.getSpiel().markt.getPreiskarrote() + " gold)");
-        mushroomcheck.setText("mushroom (" + gameController.getSpiel().markt.getPreispilz() + " gold)");
-        tomatocheck.setText("tomato (" + gameController.getSpiel().markt.getPreistomate() + " gold)");
+        saladcheck.setText("salad (" + Spiel.getInstance().getMarkt().getPreissalad() + " gold)");
+        carotcheck.setText("carot (" + Spiel.getInstance().getMarkt().getPreiskarrote() + " gold)");
+        mushroomcheck.setText("mushroom (" + Spiel.getInstance().getMarkt().getPreispilz() + " gold)");
+        tomatocheck.setText("tomato (" + Spiel.getInstance().getMarkt().getPreistomate() + " gold)");
 
         frame.revalidate();
         frame.repaint();
+    }
+
+    @Override
+    public void update() {
+        maleSpielfeldNeu(Spiel.getInstance().getAktuellerSpieler().getSpielfeld());
     }
 }

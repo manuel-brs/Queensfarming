@@ -5,7 +5,7 @@ import de.dhbw.ase.Kachel.Scheune;
 public class Spieler {
     int spielernummer = 0;
     String name;
-    Spielfeld spielfeld;
+    private Spielfeld spielfeld;
     int anzahlGold;
     public Spieler(int spielernummer, String name, int startGold) {
         this.spielernummer = spielernummer;

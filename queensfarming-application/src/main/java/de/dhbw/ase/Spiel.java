@@ -7,17 +7,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Spiel {
-    List<Spieler> spieler = new ArrayList<>();
-    Spieler aktuellerSpieler;
-    Kachelstapel stapel;
-    Markt markt;
-    boolean spielaktiv;
-    int spieleramzug = 0;
-    int zielGold = 0;
-    public Spiel(int zielGold) {
+    public static int ZIELGOLD;
+    private static Spiel instance;
+
+    private List<IObserver> observers = new ArrayList<>();
+
+    private List<Spieler> spieler = new ArrayList<>();
+    private Spieler aktuellerSpieler;
+    private Kachelstapel stapel;
+    private Markt markt;
+    private boolean spielaktiv;
+    private int spieleramzug = 0;
+    private final int zielGold;
+    private Spiel(int zielGold) {
         markt = new Markt();
         this.zielGold = zielGold;
     }
+
+    public static Spiel getInstance() {
+        if (instance == null) {
+            instance = new Spiel(ZIELGOLD);
+        }
+        return instance;
+    }
+
     public void startSpiel() {
         if (!this.spielaktiv) {
             this.spielaktiv = true;
@@ -40,10 +53,12 @@ public class Spiel {
         if (spieleramzug < spieler.size()-1) {
             spieleramzug += 1;
             this.aktuellerSpieler = spieler.get(spieleramzug);
+            SpielController.getInstance().notifyObservers();
         }
         else {
             spieleramzug = 0;
             this.aktuellerSpieler = spieler.get(spieleramzug);
+            SpielController.getInstance().notifyObservers();
         }
     }
 
@@ -52,14 +67,58 @@ public class Spiel {
             KaufErgebnis kaufErgebnis= markt.kaufeGemüse(vegetable);
             if (spieler.get(spieleramzug).anzahlGold < kaufErgebnis.getPreis()) {
                 markt.verkaufeGemüse(vegetable);
-
             } else {
                 spieler.get(spieleramzug).anzahlGold -= kaufErgebnis.getPreis();
                 Scheune scheune = (Scheune) spieler.get(spieleramzug).getSpielfeld().getSpielfeld()[4][2];
                 scheune.getInventar().put(vegetable, scheune.getInventar().get(vegetable) + 1);
+                SpielController.getInstance().notifyObservers();
             }
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    public void pflanzen(int posX, int posY, Gemüsename salat) {
+    }
+
+    public void ernten(int posX, int posY) {
+    }
+
+    public void verkaufeGemüse(Gemüsename salat) {
+    }
+
+    public void kaufeLand(int posX, int posY) {
+    }
+
+
+
+
+    //getter Methoden
+    public List<Spieler> getSpieler() {
+        return spieler;
+    }
+
+    public Spieler getAktuellerSpieler() {
+        return aktuellerSpieler;
+    }
+
+    public Kachelstapel getStapel() {
+        return stapel;
+    }
+
+    public Markt getMarkt() {
+        return markt;
+    }
+
+    public boolean isSpielaktiv() {
+        return spielaktiv;
+    }
+
+    public int getSpieleramzug() {
+        return spieleramzug;
+    }
+
+    public int getZielGold() {
+        return zielGold;
     }
 }
