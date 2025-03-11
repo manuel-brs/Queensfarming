@@ -1,10 +1,9 @@
 package de.dhbw.ase.Kachel;
 
-import de.dhbw.ase.Gemüse.Gemüse;
-import de.dhbw.ase.Gemüse.Gemüsename;
+import de.dhbw.ase.Gemüse.GemüseTyp;
 
 public class Feld extends Kachel{
-    public Feld() {
-        super(4, new Gemüse[]{new Gemüse(Gemüsename.SALAT), new Gemüse(Gemüsename.KAROTTEN)}, "Feld");
+    public Feld(GemüseTyp[] gemüsetypen) {
+        super(4, gemüsetypen, "Feld");
     }
 }

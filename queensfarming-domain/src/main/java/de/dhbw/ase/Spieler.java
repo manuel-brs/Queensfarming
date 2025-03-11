@@ -7,13 +7,13 @@ public class Spieler {
     String name;
     private Spielfeld spielfeld;
     int anzahlGold;
-    public Spieler(int spielernummer, String name, int startGold) {
+    public Spieler(int spielernummer, String name, int startGold, Markt markt) {
         this.spielernummer = spielernummer;
-        this.spielfeld = new Spielfeld();
+        this.spielfeld = new Spielfeld(markt);
         this.name = name;
         this.anzahlGold = startGold;
     }
-
+    
     public int getSpielernummer() {
         return spielernummer;
     }

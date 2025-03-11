@@ -8,6 +8,8 @@ public class Starter {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+        Markt markt = new Markt();
+
         // ASCII Art Banner
         System.out.println("    _.-^-._    .--.");
         System.out.println("  .'         `._|__|");
@@ -43,7 +45,7 @@ public class Starter {
         for (int i = 0; i < playerCount; i++) {
             System.out.print("Eingabe des Spieler Namen's " + i + ":\n> ");
             String nextLine = scanner.nextLine();
-            players.add(new Spieler(i, nextLine, startGold));
+            players.add(new Spieler(i, nextLine, startGold, markt));
         }
 
         // Bestätigung der Eingaben
@@ -57,6 +59,6 @@ public class Starter {
         Spiel spiel = Spiel.getInstance();
         players.forEach(spiel::spielerHinzufügen);
         spiel.startSpiel();
-        new GUI();
+        new GUI(markt);
     }
 }

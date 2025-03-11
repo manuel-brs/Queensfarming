@@ -1,13 +1,14 @@
 package de.dhbw.ase;
 
-import de.dhbw.ase.Gemüse.Gemüsename;
+import de.dhbw.ase.Gemüse.GemüseTyp;
 import de.dhbw.ase.Kachel.Scheune;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import static javax.swing.BorderFactory.createLineBorder;
 
@@ -18,20 +19,25 @@ public class GUI implements IObserver {
     static private JButton plant;
     static private TextArea barn;
     static private JFrame frame;
-    static private JCheckBox saladcheck;
-    static private JCheckBox mushroomcheck;
-    static private JCheckBox tomatocheck;
-    static private JCheckBox carotcheck;
-    static private TextArea kachel[][];
+    static private TextArea[][] kachel;
     private final SpielController gameController;
     static JLabel currentPlayerLabel;
-    public GUI() {
+    private final Markt markt;
+    private final Map<GemüseTyp, JCheckBox> gemüseCheckboxen = new HashMap<>();
+
+    private GemüseTyp selectedGemüseTyp;
+
+    public GUI(Markt markt) {
         this.gameController = SpielController.getInstance();
         this.gameController.registerObserver(this);
+        this.markt = markt;
         initComponents();
     }
+
     private void initComponents() {
-        //Kachel
+        frame = new JFrame();
+
+        // Kachel initialisieren
         kachel = new TextArea[5][5];
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
@@ -41,26 +47,22 @@ public class GUI implements IObserver {
                 kachel[i][j].setEditable(false);
             }
         }
+
         currentPlayerLabel = new JLabel();
         setzeAktuellerSpieler(Spiel.getInstance().getSpieler().get(0));
         currentPlayerLabel.setBounds(50, 20, 250, 30);
 
-
-        //textarea barn
+        // Scheune anzeigen
         barn = new TextArea();
-        Scheune scheune = (Scheune) Spiel.getInstance().getSpieler().get(Spiel.getInstance().getSpieleramzug()).getSpielfeld().getSpielfeld()[4][2];
-        barn.setText("Karotten: " + scheune.getInventar().get(Gemüsename.KAROTTEN) + "\n\nTomaten: " + scheune.getInventar().get(Gemüsename.TOMATEN) + " \n\nPilze: " + scheune.getInventar().get(Gemüsename.PILZE) + " \n\nSalat: " + scheune.getInventar().get(Gemüsename.SALAT) + "\n\nGold: " + Spiel.getInstance().getAktuellerSpieler().anzahlGold);
         barn.setBackground(Color.white);
-        barn.setBounds (50, 50, 250, 400);
+        barn.setBounds(50, 50, 250, 400);
         barn.setEnabled(false);
 
-
-        //Output label
+        // Output Label
         output = new JLabel();
         output.setBounds(50, 500, 250, 50);
 
-
-        //button actions
+        // Buttons
         plant = new JButton("plant");
         plant.setBounds(50, 700, 100, 30);
         plant.addActionListener(this::plant);
@@ -78,76 +80,53 @@ public class GUI implements IObserver {
         buyland.addActionListener(this::buyland);
 
         JButton buyvegetable = new JButton("buy vegetable");
-        buyvegetable.setBounds(450, 700, 100, 30);
+        buyvegetable.setBounds(450, 700, 130, 30);
         buyvegetable.addActionListener(this::buyvegetable);
 
         JButton changeplayer = new JButton("endturn");
         changeplayer.setBounds(50, 600, 100, 30);
         changeplayer.addActionListener(this::changePlayer);
 
-        JLabel lx = new JLabel();
-        lx.setText("x:");
+        // Koordinaten
+        JLabel lx = new JLabel("x:");
         lx.setBounds(590, 700, 30, 30);
         x = new JTextField();
         x.setBounds(600, 700, 30, 30);
-        JLabel ly = new JLabel();
-        ly.setText("y:");
+
+        JLabel ly = new JLabel("y:");
         ly.setBounds(640, 700, 30, 30);
         y = new JTextField();
         y.setBounds(650, 700, 30, 30);
 
+        // Checkboxen für Gemüsearten
+        int checkboxYPosition = 700;
+        for (GemüseTyp gemüseTyp : markt.getGemüsearten()) {
+            JCheckBox checkBox = new JCheckBox(gemüseTyp.getGemüsename() + " (" + gemüseTyp.getPreis() + " gold)");
+            checkBox.setBounds(700, checkboxYPosition, 200, 20);
+            checkBox.addItemListener(e -> handleCheckboxSelection(e, gemüseTyp));
+            gemüseCheckboxen.put(gemüseTyp, checkBox);
+            frame.add(checkBox);
+            checkboxYPosition += 30;
+        }
 
-        //vegetables
-        saladcheck = new JCheckBox("salad (" + Spiel.getInstance().getMarkt().getPreissalad() + " gold)");
-        saladcheck.setBounds(700, 700, 200, 20);
-        //saladcheck.setVisible(false);
-        carotcheck = new JCheckBox("carot (" + Spiel.getInstance().getMarkt().getPreiskarrote() + " gold)");
-        carotcheck.setBounds(700, 750, 200, 20);
-        //carotcheck.setVisible(false);
-        mushroomcheck = new JCheckBox("mushroom (" + Spiel.getInstance().getMarkt().getPreispilz() + " gold)");
-        mushroomcheck.setBounds(700, 800, 200, 20);
-        //mushroomcheck.setVisible(false);
-        tomatocheck = new JCheckBox("tomato (" + Spiel.getInstance().getMarkt().getPreistomate() + " gold)");
-        tomatocheck.setBounds(700, 850, 200, 20);
-        //tomatocheck.setVisible(false);
-
-
-        // ActionListener für exklusive Auswahl
-        ItemListener exclusiveSelectionListener = e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                saladcheck.setSelected(e.getSource() == saladcheck);
-                carotcheck.setSelected(e.getSource() == carotcheck);
-                mushroomcheck.setSelected(e.getSource() == mushroomcheck);
-                tomatocheck.setSelected(e.getSource() == tomatocheck);
-            }
-        };
-
-        saladcheck.addItemListener(exclusiveSelectionListener);
-        carotcheck.addItemListener(exclusiveSelectionListener);
-        mushroomcheck.addItemListener(exclusiveSelectionListener);
-        tomatocheck.addItemListener(exclusiveSelectionListener);
-
-
-        //Field
-        JPanel boardField = new JPanel () ;
+        // Spielfeld
+        JPanel boardField = new JPanel();
         boardField.setBackground(Color.white);
-        boardField.setBounds (350, 20, 600, 600);
+        boardField.setBounds(350, 20, 600, 600);
         boardField.setBorder(createLineBorder(null));
         boardField.setLayout(new GridLayout(5, 5, 0, 0));
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                boardField.add(kachel[i][j]);
+        for (TextArea[] row : kachel) {
+            for (TextArea area : row) {
+                boardField.add(area);
             }
         }
 
-
-        //Frame
-        frame = new JFrame();
-        frame. setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout (null);
+        // Frame
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(null);
         frame.setSize(1000, 1000);
         frame.setVisible(true);
-        frame.add (boardField);
+        frame.add(boardField);
         frame.add(barn);
         frame.add(plant);
         frame.add(harvest);
@@ -160,55 +139,55 @@ public class GUI implements IObserver {
         frame.add(ly);
         frame.add(output);
         frame.add(changeplayer);
-        frame.add(saladcheck);
-        frame.add(carotcheck);
-        frame.add(mushroomcheck);
-        frame.add(tomatocheck);
         frame.add(currentPlayerLabel);
 
         maleSpielfeldNeu(Spiel.getInstance().getSpieler().get(Spiel.getInstance().getSpieleramzug()).getSpielfeld());
     }
 
+    private void handleCheckboxSelection(ItemEvent e, GemüseTyp gemüseTyp) {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            gemüseCheckboxen.forEach((key, checkBox) -> {
+                if (!key.equals(gemüseTyp)) checkBox.setSelected(false);
+            });
+            selectedGemüseTyp = gemüseTyp;
+        } else if (selectedGemüseTyp == gemüseTyp) {
+            selectedGemüseTyp = null;
+        }
+    }
+
     private void plant(ActionEvent event) {
-        int posX = Integer.parseInt(x.getText());
-        int posY = Integer.parseInt(y.getText());
-        if (saladcheck.isSelected()) Spiel.getInstance().pflanzen(posX, posY, Gemüsename.SALAT);
-        if (carotcheck.isSelected()) Spiel.getInstance().pflanzen(posX, posY, Gemüsename.KAROTTEN);
-        if (mushroomcheck.isSelected()) Spiel.getInstance().pflanzen(posX, posY, Gemüsename.PILZE);
-        if (tomatocheck.isSelected()) Spiel.getInstance().pflanzen(posX, posY, Gemüsename.TOMATEN);
+        Spiel.getInstance().pflanzen(Integer.parseInt(x.getText()), Integer.parseInt(y.getText()), selectedGemüseTyp);
     }
 
     private void harvest(ActionEvent event) {
-        int posX = Integer.parseInt(x.getText());
-        int posY = Integer.parseInt(y.getText());
-        Spiel.getInstance().ernten(posX, posY);
+        Spiel.getInstance().ernten(Integer.parseInt(x.getText()), Integer.parseInt(y.getText()));
     }
 
     private void sell(ActionEvent event) {
-        if (saladcheck.isSelected()) Spiel.getInstance().verkaufeGemüse(Gemüsename.SALAT);
-        if (carotcheck.isSelected()) Spiel.getInstance().verkaufeGemüse(Gemüsename.KAROTTEN);
-        if (mushroomcheck.isSelected()) Spiel.getInstance().verkaufeGemüse(Gemüsename.PILZE);
-        if (tomatocheck.isSelected()) Spiel.getInstance().verkaufeGemüse(Gemüsename.TOMATEN);
+        if (selectedGemüseTyp == null) {
+            output.setText("Bitte ein Gemüse auswählen!");
+            return;
+        }
+        Spiel.getInstance().verkaufeGemüse(selectedGemüseTyp);
     }
 
     private void buyland(ActionEvent event) {
-        int posX = Integer.parseInt(x.getText());
-        int posY = Integer.parseInt(y.getText());
-        Spiel.getInstance().kaufeLand(posX, posY);
+        Spiel.getInstance().kaufeLand(Integer.parseInt(x.getText()), Integer.parseInt(y.getText()));
     }
 
     private void buyvegetable(ActionEvent event) {
-        if (saladcheck.isSelected()) Spiel.getInstance().kaufeGemüse(Gemüsename.SALAT);
-        if (carotcheck.isSelected()) Spiel.getInstance().kaufeGemüse(Gemüsename.KAROTTEN);
-        if (mushroomcheck.isSelected()) Spiel.getInstance().kaufeGemüse(Gemüsename.PILZE);
-        if (tomatocheck.isSelected()) Spiel.getInstance().kaufeGemüse(Gemüsename.TOMATEN);
+        System.out.println("kaufe gemüse");
+        if (selectedGemüseTyp == null) {
+            output.setText("Bitte ein Gemüse auswählen!");
+            return;
+        }
+        Spiel.getInstance().kaufeGemüse(selectedGemüseTyp);
     }
 
     private void changePlayer(ActionEvent event) {
         Spiel.getInstance().beendeZug();
-        Scheune scheune = (Scheune) Spiel.getInstance().getSpieler().get(Spiel.getInstance().getSpieleramzug()).getSpielfeld().getSpielfeld()[4][2];
-        barn.setText("Karotten: " + scheune.getInventar().get(Gemüsename.KAROTTEN) + "\n\nTomaten: " + scheune.getInventar().get(Gemüsename.TOMATEN) + " \n\nPilze: " + scheune.getInventar().get(Gemüsename.PILZE) + " \n\nSalat: " + scheune.getInventar().get(Gemüsename.SALAT) + "\n\nGold: " + Spiel.getInstance().getAktuellerSpieler().anzahlGold);
-        setzeAktuellerSpieler(Spiel.getInstance().getSpieler().get(Spiel.getInstance().getSpieleramzug()));
+        maleSpielfeldNeu(Spiel.getInstance().getAktuellerSpieler().getSpielfeld());
+        setzeAktuellerSpieler(Spiel.getInstance().getAktuellerSpieler());
     }
 
     private void setzeAktuellerSpieler(Spieler aktuellerSpieler) {
@@ -216,23 +195,39 @@ public class GUI implements IObserver {
     }
 
     private void maleSpielfeldNeu(Spielfeld spielfeld) {
-        for (int i = 0; i < spielfeld.getSpielfeld().length; i++) {
-            for (int j = 0; j < spielfeld.getSpielfeld()[i].length; j++) {
-                if(spielfeld.getSpielfeld()[i][j] != null) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (spielfeld.getSpielfeld()[i][j] != null) {
                     kachel[i][j].setText(spielfeld.getSpielfeld()[i][j].getName());
                     kachel[i][j].setBackground(Color.gray);
                     kachel[i][j].setEnabled(true);
+                } else {
+                    kachel[i][j].setText("");
+                    kachel[i][j].setBackground(Color.white);
+                    kachel[i][j].setEnabled(false);
                 }
             }
         }
-        Scheune scheune = (Scheune) Spiel.getInstance().getSpieler().get(Spiel.getInstance().getSpieleramzug()).getSpielfeld().getSpielfeld()[4][2];
-        barn.setText("Karotten: " + scheune.getInventar().get(Gemüsename.KAROTTEN) + "\n\nTomaten: " + scheune.getInventar().get(Gemüsename.TOMATEN) + " \n\nPilze: " + scheune.getInventar().get(Gemüsename.PILZE) + " \n\nSalat: " + scheune.getInventar().get(Gemüsename.SALAT) + "\n\nGold: " + Spiel.getInstance().getAktuellerSpieler().anzahlGold);
 
-        //vegetables
-        saladcheck.setText("salad (" + Spiel.getInstance().getMarkt().getPreissalad() + " gold)");
-        carotcheck.setText("carot (" + Spiel.getInstance().getMarkt().getPreiskarrote() + " gold)");
-        mushroomcheck.setText("mushroom (" + Spiel.getInstance().getMarkt().getPreispilz() + " gold)");
-        tomatocheck.setText("tomato (" + Spiel.getInstance().getMarkt().getPreistomate() + " gold)");
+        // Scheune und Gold aktualisieren
+        Scheune scheune = (Scheune) Spiel.getInstance().getAktuellerSpieler().getSpielfeld().getSpielfeld()[4][2];
+        StringBuilder sb = new StringBuilder();
+        for (GemüseTyp gemüsetyp : markt.getGemüsearten()) {
+            sb.append(gemüsetyp.getGemüsename())
+                    .append(": ")
+                    .append(scheune.getInventar().getOrDefault(gemüsetyp, -1))
+                    .append("\n\n");
+        }
+        sb.append("Gold: ").append(Spiel.getInstance().getAktuellerSpieler().anzahlGold);
+        barn.setText(sb.toString());
+
+        for (Map.Entry<GemüseTyp, JCheckBox> entry : gemüseCheckboxen.entrySet()) {
+            GemüseTyp gemüseTyp = entry.getKey();
+            JCheckBox checkBox = entry.getValue();
+            String neuerText = gemüseTyp.getGemüsename() + " (" + entry.getKey().getPreis() + " gold)";
+            checkBox.setText(neuerText);
+        }
+
 
         frame.revalidate();
         frame.repaint();

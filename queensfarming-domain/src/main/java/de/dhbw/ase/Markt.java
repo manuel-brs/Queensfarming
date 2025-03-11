@@ -1,81 +1,41 @@
 package de.dhbw.ase;
 
 import de.dhbw.ase.Gemüse.Gemüse;
-import de.dhbw.ase.Gemüse.Gemüsename;
+import de.dhbw.ase.Gemüse.GemüseTyp;
 
 public class Markt {
-    private int preiskarrote = 2;
-    private int preistomate = 6;
-    private int preissalad = 4;
-    private int preispilz = 16;
+    private GemüseTyp[] gemüsearten;
+    private Kachelstapel kachelstapel;
 
     public Markt() {
-
+        this.gemüsearten = new GemüseTyp[]{new GemüseTyp("KAROTTEN", 5, 1, 3, 2), new GemüseTyp("SALAT", 3, 2, 6, 4), new GemüseTyp("TOMATEN", 4, 3, 9,6), new GemüseTyp("PILZE", 2, 11, 21, 16)};
+        this.kachelstapel = new Kachelstapel(5, 5, 5, 5, 5, this.gemüsearten);
+        this.kachelstapel.mischeStapel();
     }
 
-    public KaufErgebnis kaufeGemüse(Gemüsename gemüsename) throws Exception {
-        int kosten = 0;
-        if(gemüsename.equals(Gemüsename.PILZE)) {
-            if(preispilz < 21 && preispilz > 11) {
-                preispilz += 1;
-                kosten = preispilz;
-            }
-        } else if (gemüsename.equals(Gemüsename.SALAT)) {
-            if(preissalad < 6 && preissalad > 2) {
-                preissalad += 1;
-                kosten = preissalad;
-            }
-        } else if (gemüsename.equals(Gemüsename.TOMATEN)) {
-            if(preistomate < 9 && preistomate > 3) {
-                preistomate += 1;
-                kosten = preistomate;
-            }
-        } else if (gemüsename.equals(Gemüsename.KAROTTEN)) {
-            if(preiskarrote < 3 && preiskarrote > 1) {
-                preiskarrote += 1;
-                kosten = preiskarrote;
-            }
-        } else {
-            throw new Exception("Gemüsename nicht erkannt");
-        }
-        return new KaufErgebnis(new Gemüse(gemüsename), kosten);
+    public KachelPreis kaufeLand(int scheunendistanz) {
+        return new KachelPreis(kachelstapel.zieheKachel(), scheunendistanz*10);
     }
 
-    public void verkaufeGemüse(Gemüsename gemüsename) throws Exception {
-        if(gemüsename.equals(Gemüsename.PILZE)) {
-            if(preispilz < 21 && preispilz > 11) {
-                preispilz -= 1;
-            }
-        } else if (gemüsename.equals(Gemüsename.SALAT)) {
-            if(preissalad < 6 && preissalad > 2) {
-                preissalad -= 1;
-            }
-        } else if (gemüsename.equals(Gemüsename.TOMATEN)) {
-            if(preistomate < 9 && preistomate > 3) {
-                preistomate -= 1;
-            }
-        } else if (gemüsename.equals(Gemüsename.KAROTTEN)) {
-            if(preiskarrote < 3 && preiskarrote > 1) {
-                preiskarrote -= 1;
-            }
-        } else {
-            throw new Exception("Gemüsename nicht erkannt");
-        }
+    public KaufErgebnis kaufeGemüse(GemüseTyp gemüseTyp) {
+        Gemüse gemüse = new Gemüse(gemüseTyp);
+        int preis = gemüseTyp.getPreis();
+        gemüseTyp.erhöhePreis();
+        return new KaufErgebnis(gemüse, preis);
     }
 
-    public int getPreiskarrote() {
-        return preiskarrote;
+    public KaufErgebnis verkaufeGemüse(GemüseTyp gemüseTyp) {
+        Gemüse gemüse = new Gemüse(gemüseTyp);
+        int preis = gemüseTyp.getPreis();
+        gemüseTyp.verringerePreis();
+        return new KaufErgebnis(gemüse, preis);
     }
 
-    public int getPreistomate() {
-        return preistomate;
+    public GemüseTyp[] getGemüsearten() {
+        return gemüsearten;
     }
 
-    public int getPreissalad() {
-        return preissalad;
-    }
-
-    public int getPreispilz() {
-        return preispilz;
+    public Kachelstapel getKachelstapel() {
+        return kachelstapel;
     }
 }

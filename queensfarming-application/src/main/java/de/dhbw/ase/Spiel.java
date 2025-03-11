@@ -1,6 +1,6 @@
 package de.dhbw.ase;
 
-import de.dhbw.ase.Gemüse.Gemüsename;
+import de.dhbw.ase.Gemüse.GemüseTyp;
 import de.dhbw.ase.Kachel.Scheune;
 
 import java.util.ArrayList;
@@ -8,11 +8,8 @@ import java.util.List;
 
 public class Spiel {
     public static int ZIELGOLD;
-    private String message;
+    private String message = "";
     private static Spiel instance;
-
-    private List<IObserver> observers = new ArrayList<>();
-
     private List<Spieler> spieler = new ArrayList<>();
     private Spieler aktuellerSpieler;
     private Kachelstapel stapel;
@@ -37,7 +34,7 @@ public class Spiel {
             this.spielaktiv = true;
             this.aktuellerSpieler = spieler.get(0);
             int anzahlspieler = spieler.size();
-            stapel = new Kachelstapel(4*anzahlspieler, 4*anzahlspieler, 2*anzahlspieler, anzahlspieler, 2*anzahlspieler);
+            stapel = markt.getKachelstapel();
         }
     }
     public boolean spielerHinzufügen(Spieler neuerspieler) {
@@ -58,22 +55,23 @@ public class Spiel {
         }
         else {
             spieleramzug = 0;
+            //alle Pflanzen müssen wachsen
             this.aktuellerSpieler = spieler.get(spieleramzug);
             SpielController.getInstance().notifyObservers();
         }
     }
 
-    public void kaufeGemüse(Gemüsename vegetable) {
+    public void kaufeGemüse(GemüseTyp gemüsename) {
         try {
-            KaufErgebnis kaufErgebnis= markt.kaufeGemüse(vegetable);
+            KaufErgebnis kaufErgebnis= markt.kaufeGemüse(gemüsename);
             if (spieler.get(spieleramzug).anzahlGold < kaufErgebnis.getPreis()) {
-                markt.verkaufeGemüse(vegetable);
+                markt.verkaufeGemüse(gemüsename);
                 message = "Du hast nicht genug Geld um das Gemüse zu kaufen.";
                 SpielController.getInstance().notifyObservers();
             } else {
                 spieler.get(spieleramzug).anzahlGold -= kaufErgebnis.getPreis();
                 Scheune scheune = (Scheune) spieler.get(spieleramzug).getSpielfeld().getSpielfeld()[4][2];
-                scheune.getInventar().put(vegetable, scheune.getInventar().get(vegetable) + 1);
+                scheune.getInventar().put(gemüsename, scheune.getInventar().get(gemüsename) + 1);
                 SpielController.getInstance().notifyObservers();
             }
         } catch (Exception e) {
@@ -81,16 +79,41 @@ public class Spiel {
         }
     }
 
-    public void pflanzen(int posX, int posY, Gemüsename salat) {
+    public void pflanzen(int posX, int posY, GemüseTyp gemüseTyp) {
     }
 
     public void ernten(int posX, int posY) {
     }
 
-    public void verkaufeGemüse(Gemüsename salat) {
+    public void verkaufeGemüse(GemüseTyp gemüsename) {
+        try {
+            KaufErgebnis kaufErgebnis = markt.verkaufeGemüse(gemüsename);
+            Scheune scheune = (Scheune) spieler.get(spieleramzug).getSpielfeld().getSpielfeld()[4][2];
+            int anzahlGemüse = scheune.getInventar().get(gemüsename);
+            if (anzahlGemüse < 1) {
+                markt.kaufeGemüse(gemüsename);
+                message = "Du hast kein Gemüsezum verkaufen.";
+                SpielController.getInstance().notifyObservers();
+            } else {
+                scheune.getInventar().put(gemüsename, anzahlGemüse-1);
+                spieler.get(spieleramzug).anzahlGold += kaufErgebnis.getPreis();
+                SpielController.getInstance().notifyObservers();
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     public void kaufeLand(int posX, int posY) {
+        Spielfeld spielfeld = spieler.get(spieleramzug).getSpielfeld();
+        if(spielfeld.getSpielfeld()[posX][posY] != null) {
+            message = "Dieses Feld ist bereits wurde bereits bebaut!";
+            SpielController.getInstance().notifyObservers();
+            return;
+        }
+        int distanz = spielfeld.berechneScheunenDistanz(posX, posY);
+        KachelPreis kachelPreis = markt.kaufeLand(distanz);
+
     }
 
 
