@@ -56,9 +56,11 @@ public class Starter {
 
         scanner.close();
 
-        Spiel spiel = Spiel.getInstance();
+        SpielController controller = new SpielController();
+
+        Spiel spiel = new Spiel(controller, goalGold);
         players.forEach(spiel::spielerHinzufügen);
         spiel.startSpiel();
-        new GUI(markt);
+        new GUI(controller, markt, spiel);
     }
 }

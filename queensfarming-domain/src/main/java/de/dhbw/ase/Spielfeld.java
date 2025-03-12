@@ -10,7 +10,7 @@ public class Spielfeld {
         this.spielfeld[4][2] = new Scheune(markt.getGemüsearten());
     }
     public int berechneScheunenDistanz(int x, int y) {
-        return 0;
+        return (int) Math.sqrt(x * x + y * y);
     }
 
     public void bebaueFeld(Kachel kachel) {

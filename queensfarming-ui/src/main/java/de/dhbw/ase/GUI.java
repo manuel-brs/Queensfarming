@@ -24,13 +24,15 @@ public class GUI implements IObserver {
     static JLabel currentPlayerLabel;
     private final Markt markt;
     private final Map<GemüseTyp, JCheckBox> gemüseCheckboxen = new HashMap<>();
+    private Spiel spiel;
 
     private GemüseTyp selectedGemüseTyp;
 
-    public GUI(Markt markt) {
-        this.gameController = SpielController.getInstance();
+    public GUI(SpielController controller, Markt markt, Spiel spiel) {
+        this.gameController = controller;
         this.gameController.registerObserver(this);
         this.markt = markt;
+        this.spiel = spiel;
         initComponents();
     }
 
@@ -49,7 +51,7 @@ public class GUI implements IObserver {
         }
 
         currentPlayerLabel = new JLabel();
-        setzeAktuellerSpieler(Spiel.getInstance().getSpieler().get(0));
+        setzeAktuellerSpieler(spiel.getSpieler().get(0));
         currentPlayerLabel.setBounds(50, 20, 250, 30);
 
         // Scheune anzeigen
@@ -141,7 +143,7 @@ public class GUI implements IObserver {
         frame.add(changeplayer);
         frame.add(currentPlayerLabel);
 
-        maleSpielfeldNeu(Spiel.getInstance().getSpieler().get(Spiel.getInstance().getSpieleramzug()).getSpielfeld());
+        maleSpielfeldNeu(spiel.getSpieler().get(spiel.getSpieleramzug()).getSpielfeld());
     }
 
     private void handleCheckboxSelection(ItemEvent e, GemüseTyp gemüseTyp) {
@@ -156,38 +158,81 @@ public class GUI implements IObserver {
     }
 
     private void plant(ActionEvent event) {
-        Spiel.getInstance().pflanzen(Integer.parseInt(x.getText()), Integer.parseInt(y.getText()), selectedGemüseTyp);
+        if (spiel.getAktionszähler() < 2) {
+            spiel.pflanzen(Integer.parseInt(x.getText()), Integer.parseInt(y.getText()), selectedGemüseTyp);
+            spiel.inkrementAktionszähler();
+        } else {
+            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
+        }
+        gameController.notifyObservers();
     }
 
     private void harvest(ActionEvent event) {
-        Spiel.getInstance().ernten(Integer.parseInt(x.getText()), Integer.parseInt(y.getText()));
+        if (spiel.getAktionszähler() < 2) {
+            spiel.ernten(Integer.parseInt(x.getText()), Integer.parseInt(y.getText()));
+            spiel.inkrementAktionszähler();
+        } else {
+            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
+        }
+        gameController.notifyObservers();
     }
 
     private void sell(ActionEvent event) {
-        if (selectedGemüseTyp == null) {
-            output.setText("Bitte ein Gemüse auswählen!");
-            return;
+        if (spiel.getAktionszähler() < 2) {
+            if (selectedGemüseTyp == null) {
+                spiel.setMessage("Bitte ein Gemüse auswählen!");
+                gameController.notifyObservers();
+                return;
+            }
+            if (spiel.verkaufeGemüse(selectedGemüseTyp)) {
+                spiel.inkrementAktionszähler();
+            }
+        } else {
+            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
         }
-        Spiel.getInstance().verkaufeGemüse(selectedGemüseTyp);
+        gameController.notifyObservers();
     }
 
     private void buyland(ActionEvent event) {
-        Spiel.getInstance().kaufeLand(Integer.parseInt(x.getText()), Integer.parseInt(y.getText()));
+        if (spiel.getAktionszähler() < 2) {
+            try {
+                int x_ = Integer.parseInt(x.getText());
+                int y_ = Integer.parseInt(y.getText());
+                if (spiel.kaufeLand(y_, x_)) {
+                    spiel.inkrementAktionszähler();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                spiel.setMessage("Bitte gebe gültige Koordinaten ein!");
+                gameController.notifyObservers();
+            }
+        } else {
+            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
+            gameController.notifyObservers();
+        }
+        gameController.notifyObservers();
     }
 
     private void buyvegetable(ActionEvent event) {
-        System.out.println("kaufe gemüse");
-        if (selectedGemüseTyp == null) {
-            output.setText("Bitte ein Gemüse auswählen!");
-            return;
+        if (spiel.getAktionszähler() < 2) {
+            if (selectedGemüseTyp == null) {
+                spiel.setMessage("Bitte ein Gemüse auswählen!");
+                gameController.notifyObservers();
+                return;
+            }
+            if (spiel.kaufeGemüse(selectedGemüseTyp)) {
+                spiel.inkrementAktionszähler();
+            }
+        } else {
+            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
         }
-        Spiel.getInstance().kaufeGemüse(selectedGemüseTyp);
+        gameController.notifyObservers();
     }
 
     private void changePlayer(ActionEvent event) {
-        Spiel.getInstance().beendeZug();
-        maleSpielfeldNeu(Spiel.getInstance().getAktuellerSpieler().getSpielfeld());
-        setzeAktuellerSpieler(Spiel.getInstance().getAktuellerSpieler());
+        spiel.beendeZug();
+        maleSpielfeldNeu(spiel.getAktuellerSpieler().getSpielfeld());
+        setzeAktuellerSpieler(spiel.getAktuellerSpieler());
     }
 
     private void setzeAktuellerSpieler(Spieler aktuellerSpieler) {
@@ -210,7 +255,7 @@ public class GUI implements IObserver {
         }
 
         // Scheune und Gold aktualisieren
-        Scheune scheune = (Scheune) Spiel.getInstance().getAktuellerSpieler().getSpielfeld().getSpielfeld()[4][2];
+        Scheune scheune = (Scheune) spiel.getAktuellerSpieler().getSpielfeld().getSpielfeld()[4][2];
         StringBuilder sb = new StringBuilder();
         for (GemüseTyp gemüsetyp : markt.getGemüsearten()) {
             sb.append(gemüsetyp.getGemüsename())
@@ -218,7 +263,7 @@ public class GUI implements IObserver {
                     .append(scheune.getInventar().getOrDefault(gemüsetyp, -1))
                     .append("\n\n");
         }
-        sb.append("Gold: ").append(Spiel.getInstance().getAktuellerSpieler().anzahlGold);
+        sb.append("Gold: ").append(spiel.getAktuellerSpieler().anzahlGold);
         barn.setText(sb.toString());
 
         for (Map.Entry<GemüseTyp, JCheckBox> entry : gemüseCheckboxen.entrySet()) {
@@ -235,7 +280,7 @@ public class GUI implements IObserver {
 
     @Override
     public void update() {
-        String message = Spiel.getInstance().getMessage();
+        String message = spiel.getMessage();
         if (!message.isEmpty()) {
             JOptionPane popup = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE);
             JDialog dialog = popup.createDialog(frame, "Nachricht");
@@ -246,7 +291,7 @@ public class GUI implements IObserver {
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
         }
-        maleSpielfeldNeu(Spiel.getInstance().getAktuellerSpieler().getSpielfeld());
-        Spiel.getInstance().setMessage("");
+        maleSpielfeldNeu(spiel.getAktuellerSpieler().getSpielfeld());
+        spiel.setMessage("");
     }
 }
