@@ -1,6 +1,8 @@
 package de.dhbw.ase;
 
 import de.dhbw.ase.Gemüse.GemüseTyp;
+import de.dhbw.ase.Kachel.BebaubareKachel;
+import de.dhbw.ase.Kachel.Kachel;
 import de.dhbw.ase.Kachel.Scheune;
 
 import javax.swing.*;
@@ -159,8 +161,22 @@ public class GUI implements IObserver {
 
     private void plant(ActionEvent event) {
         if (spiel.getAktionszähler() < 2) {
-            spiel.pflanzen(Integer.parseInt(x.getText()), Integer.parseInt(y.getText()), selectedGemüseTyp);
-            spiel.inkrementAktionszähler();
+            if (selectedGemüseTyp == null) {
+                spiel.setMessage("Bitte ein Gemüse auswählen!");
+                gameController.notifyObservers();
+                return;
+            }
+            try {
+                int x_ = Integer.parseInt(x.getText());
+                int y_ = Integer.parseInt(y.getText());
+                if (spiel.pflanzen(y_, x_, selectedGemüseTyp)) {
+                    spiel.inkrementAktionszähler();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                spiel.setMessage("Bitte gebe gültige Koordinaten ein!");
+                gameController.notifyObservers();
+            }
         } else {
             spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
         }
@@ -242,7 +258,19 @@ public class GUI implements IObserver {
     private void maleSpielfeldNeu(Spielfeld spielfeld) {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-                if (spielfeld.getSpielfeld()[i][j] != null) {
+                if (spielfeld.getSpielfeld()[i][j] instanceof BebaubareKachel) {
+                    BebaubareKachel currentkachel = (BebaubareKachel) spielfeld.getSpielfeld()[i][j];
+                    String angebautText = (currentkachel.getAngebaut() != null)
+                            ? currentkachel.getAngebaut().getGemüsename()
+                            : "";
+
+                    String text  = currentkachel.getName() + "\nangebaut: " + angebautText +
+                            "\nkapazität: " + currentkachel.getWachstumsstatus() + "/" + currentkachel.getKapazität();
+
+                    kachel[i][j].setText(text);
+                    kachel[i][j].setBackground(Color.gray);
+                    kachel[i][j].setEnabled(true);
+                } else if (spielfeld.getSpielfeld()[i][j] instanceof Scheune) {
                     kachel[i][j].setText(spielfeld.getSpielfeld()[i][j].getName());
                     kachel[i][j].setBackground(Color.gray);
                     kachel[i][j].setEnabled(true);

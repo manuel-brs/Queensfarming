@@ -1,8 +1,11 @@
 package de.dhbw.ase;
 
 import de.dhbw.ase.Gemüse.GemüseTyp;
+import de.dhbw.ase.Kachel.BebaubareKachel;
+import de.dhbw.ase.Kachel.Kachel;
 import de.dhbw.ase.Kachel.Scheune;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +53,12 @@ public class Spiel {
             gameController.notifyObservers();
         }
         else {
+            System.out.println("new round");
             spieleramzug = 0;
             //alle Pflanzen müssen wachsen
+            spieler.forEach(spieler -> {
+                spieler.getSpielfeld().wachsen();
+            });
             this.aktuellerSpieler = spieler.get(spieleramzug);
             gameController.notifyObservers();
         }
@@ -78,7 +85,29 @@ public class Spiel {
         return false;
     }
 
-    public void pflanzen(int posX, int posY, GemüseTyp gemüseTyp) {
+    public boolean pflanzen(int posX, int posY, GemüseTyp gemüse) {
+        posX = 4 - posX;
+        posY += 2;
+        Kachel kachel = spieler.get(spieleramzug).getSpielfeld().getSpielfeld()[posX][posY];
+        if (kachel == null) {
+            message = "Dieses Feld hat noch keine Kachel!";
+            gameController.notifyObservers();
+            return false;
+        }
+        if (kachel instanceof Scheune) {
+            message = "In die Scheune kann nichts angebaut werden!";
+            gameController.notifyObservers();
+            return false;
+        }
+        if (((BebaubareKachel) kachel).getAngebaut() == null) {
+            boolean check = ((BebaubareKachel)kachel).baueGemüseAn(gemüse);
+            gameController.notifyObservers();
+            if (!check) {
+                message = "Gemüse konnte nicht gepflanzt werden!";
+            }
+            return check;
+        }
+        return false;
     }
 
     public void ernten(int posX, int posY) {

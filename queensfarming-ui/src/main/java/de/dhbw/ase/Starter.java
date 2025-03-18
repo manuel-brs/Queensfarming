@@ -24,9 +24,12 @@ public class Starter {
         System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 
         // Spieleranzahl abfragen
-        System.out.print("Wie viele Spieler\n> ");
-        int playerCount = scanner.nextInt();
-        scanner.nextLine();
+        int playerCount;
+        do {
+            System.out.print("Wie viele Spieler (mindestens 2)?\n> ");
+            playerCount = scanner.nextInt();
+            scanner.nextLine();
+        } while (playerCount < 2);
 
         // Startgold abfragen
         System.out.print("Mit wie viel Geld sollte ein Spieler starten?\n> ");

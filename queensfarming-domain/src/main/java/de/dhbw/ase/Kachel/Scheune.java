@@ -9,7 +9,7 @@ public class Scheune extends Kachel {
     private Map<GemüseTyp, Integer> inventar = new HashMap<>();
 
     public Scheune(GemüseTyp[] gemüsetypen) {
-        super(-1, gemüsetypen, "Scheune");
+        super(gemüsetypen, "Scheune");
         for (GemüseTyp gemüsetyp:gemüsetypen) {
             inventar.put(gemüsetyp, 0);
         }

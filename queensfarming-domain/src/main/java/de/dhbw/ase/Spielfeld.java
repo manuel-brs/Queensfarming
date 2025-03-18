@@ -1,7 +1,10 @@
 package de.dhbw.ase;
 
+import de.dhbw.ase.Kachel.BebaubareKachel;
 import de.dhbw.ase.Kachel.Kachel;
 import de.dhbw.ase.Kachel.Scheune;
+
+import java.util.Arrays;
 
 public class Spielfeld {
     private Kachel[][] spielfeld;
@@ -13,8 +16,14 @@ public class Spielfeld {
         return (int) Math.sqrt(x * x + y * y);
     }
 
-    public void bebaueFeld(Kachel kachel) {
-
+    public void wachsen() {
+        for (Kachel[] kachelarray : spielfeld) {
+            for (Kachel kachel : kachelarray) {
+                if (!(kachel instanceof Scheune) && kachel != null) {
+                    ((BebaubareKachel) kachel).wachsen();
+                }
+            }
+        }
     }
     public Kachel[][] getSpielfeld() {
         return spielfeld;

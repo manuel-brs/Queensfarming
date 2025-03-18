@@ -3,23 +3,15 @@ package de.dhbw.ase.Kachel;
 import de.dhbw.ase.Gemüse.Gemüse;
 import de.dhbw.ase.Gemüse.GemüseTyp;
 
-public class Kachel {
-    private String name;
-    private int kapazität;
-    private GemüseTyp anbaubaresgemüse[];
+import java.util.Optional;
 
-    public int getKapazität() {
-        return kapazität;
-    }
+abstract public class Kachel {
+    protected String name;
+    protected GemüseTyp anbaubaresgemüse[];
 
-    public Kachel(int kapazität, GemüseTyp anbaubaresgemüse[], String name) {
-        this.kapazität = kapazität;
+    public Kachel(GemüseTyp anbaubaresgemüse[], String name) {
         this.anbaubaresgemüse = anbaubaresgemüse;
         this.name = name;
-    }
-
-    public GemüseTyp[] getAnbaubaresgemüse() {
-        return anbaubaresgemüse;
     }
 
     public String getName() {
