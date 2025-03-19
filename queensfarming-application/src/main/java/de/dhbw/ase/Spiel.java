@@ -4,8 +4,10 @@ import de.dhbw.ase.Gemüse.GemüseTyp;
 import de.dhbw.ase.Kachel.BebaubareKachel;
 import de.dhbw.ase.Kachel.Kachel;
 import de.dhbw.ase.Kachel.Scheune;
+import de.dhbw.ase.ValueObject.ErntePreis;
+import de.dhbw.ase.ValueObject.KachelPreis;
+import de.dhbw.ase.ValueObject.KaufErgebnis;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,13 +49,17 @@ public class Spiel {
     }
 
     public void beendeZug() {
+        if (überprüfeSieg()) {
+            message = "Spieler "+spieler.get(spieleramzug).getName()+" hat gewonnen!!!";
+            gameController.notifyObservers();
+            return;
+        }
         if (spieleramzug < spieler.size()-1) {
             spieleramzug += 1;
             this.aktuellerSpieler = spieler.get(spieleramzug);
             gameController.notifyObservers();
         }
         else {
-            System.out.println("new round");
             spieleramzug = 0;
             //alle Pflanzen müssen wachsen
             spieler.forEach(spieler -> {
@@ -63,6 +69,13 @@ public class Spiel {
             gameController.notifyObservers();
         }
         aktionszähler = 0;
+    }
+
+    private boolean überprüfeSieg() {
+        if (spieler.get(spieleramzug).anzahlGold >= ZIELGOLD) {
+            return true;
+        }
+        return false;
     }
 
     public boolean kaufeGemüse(GemüseTyp gemüsename) {
@@ -77,7 +90,7 @@ public class Spiel {
                 Scheune scheune = (Scheune) spieler.get(spieleramzug).getSpielfeld().getSpielfeld()[4][2];
                 scheune.getInventar().put(gemüsename, scheune.getInventar().get(gemüsename) + 1);
                 gameController.notifyObservers();
-                return false;
+                return true;
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -88,29 +101,90 @@ public class Spiel {
     public boolean pflanzen(int posX, int posY, GemüseTyp gemüse) {
         posX = 4 - posX;
         posY += 2;
-        Kachel kachel = spieler.get(spieleramzug).getSpielfeld().getSpielfeld()[posX][posY];
+
+        Spielfeld spielfeld = spieler.get(spieleramzug).getSpielfeld();
+        Kachel kachel = spielfeld.getSpielfeld()[posX][posY];
+        Scheune scheune = (Scheune) spielfeld.getSpielfeld()[4][2];
+
+        if (scheune.getInventar().getOrDefault(gemüse, 0) < 1) {
+            message = "Du hast kein " + gemüse.getGemüsename() + " in deiner Scheune!";
+            gameController.notifyObservers();
+            return false;
+        }
+
         if (kachel == null) {
             message = "Dieses Feld hat noch keine Kachel!";
             gameController.notifyObservers();
             return false;
         }
+
         if (kachel instanceof Scheune) {
             message = "In die Scheune kann nichts angebaut werden!";
             gameController.notifyObservers();
             return false;
         }
-        if (((BebaubareKachel) kachel).getAngebaut() == null) {
-            boolean check = ((BebaubareKachel)kachel).baueGemüseAn(gemüse);
+
+        if (!(kachel instanceof BebaubareKachel bebaubareKachel)) {
+            message = "Dieses Feld kann nicht bebaut werden!";
             gameController.notifyObservers();
-            if (!check) {
-                message = "Gemüse konnte nicht gepflanzt werden!";
-            }
-            return check;
+            return false;
         }
-        return false;
+
+        if (bebaubareKachel.getAngebaut() != null) {
+            return false; // Feld ist bereits bebaut
+        }
+
+        if (!bebaubareKachel.baueGemüseAn(gemüse)) {
+            message = "Gemüse konnte nicht gepflanzt werden!";
+            gameController.notifyObservers();
+            return false;
+        }
+
+        // Gemüse erfolgreich gepflanzt, Inventar aktualisieren
+        scheune.getInventar().put(gemüse, scheune.getInventar().get(gemüse) - 1);
+        gameController.notifyObservers();
+        return true;
     }
 
-    public void ernten(int posX, int posY) {
+
+    public boolean ernten(int posX, int posY) {
+        posX = 4 - posX;
+        posY += 2;
+
+        Spielfeld spielfeld = spieler.get(spieleramzug).getSpielfeld();
+        Kachel kachel = spielfeld.getSpielfeld()[posX][posY];
+        Scheune scheune = (Scheune) spielfeld.getSpielfeld()[4][2];
+
+        if (kachel == null) {
+            message = "Dieses Feld hat noch keine Kachel!";
+            gameController.notifyObservers();
+            return false;
+        }
+
+        if (kachel instanceof Scheune) {
+            message = "Die Scheune kann nicht geerntet werden!";
+            gameController.notifyObservers();
+            return false;
+        }
+
+        if (!(kachel instanceof BebaubareKachel bebaubareKachel)) {
+            message = "Dieses Feld kann nicht geerntet werden!";
+            gameController.notifyObservers();
+            return false;
+        }
+
+        ErntePreis geerntetesgemüse = bebaubareKachel.ernteKachel();
+        if (geerntetesgemüse.getGemüseTyp() == null) {
+            message = "Kachel konnte nicht geerntet werden!";
+            gameController.notifyObservers();
+            return false;
+        }
+
+        // Gemüse erfolgreich geerntet, Inventar aktualisieren
+        scheune.getInventar().put(geerntetesgemüse.getGemüseTyp(), scheune.getInventar().get(geerntetesgemüse.getGemüseTyp()) + geerntetesgemüse.getAnzahl());
+        ((BebaubareKachel) spielfeld.getSpielfeld()[posX][posY]).resetWachstumsstatus();
+        gameController.notifyObservers();
+        return true;
     }
 
     public boolean verkaufeGemüse(GemüseTyp gemüsename) {
@@ -148,6 +222,7 @@ public class Spiel {
         if(spieler.get(spieleramzug).anzahlGold >= kachelPreis.getPreis()) {
             spieler.get(spieleramzug).anzahlGold -= kachelPreis.getPreis();
             spielfeld.getSpielfeld()[posX][posY] = kachelPreis.getKachel();
+            return true;
         }
         return false;
     }

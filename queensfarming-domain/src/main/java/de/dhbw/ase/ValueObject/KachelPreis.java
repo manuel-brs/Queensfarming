@@ -1,6 +1,5 @@
-package de.dhbw.ase;
+package de.dhbw.ase.ValueObject;
 
-import de.dhbw.ase.Gemüse.Gemüse;
 import de.dhbw.ase.Kachel.Kachel;
 
 import java.util.Objects;

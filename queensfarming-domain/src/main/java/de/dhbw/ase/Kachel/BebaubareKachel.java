@@ -1,6 +1,7 @@
 package de.dhbw.ase.Kachel;
 
 import de.dhbw.ase.Gemüse.GemüseTyp;
+import de.dhbw.ase.ValueObject.ErntePreis;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -36,10 +37,10 @@ abstract public class BebaubareKachel extends Kachel {
         }
     }
 
-    public GemüseTyp ernteKachel() {
+    public ErntePreis ernteKachel() {
         GemüseTyp gemüse = this.angebaut;
         this.angebaut = null;
-        return gemüse;
+        return new ErntePreis(gemüse, this.wachstumsstatus);
     }
 
     public int getWachstumsstatus() {
@@ -52,5 +53,9 @@ abstract public class BebaubareKachel extends Kachel {
 
     public GemüseTyp getAngebaut() {
         return angebaut;
+    }
+
+    public void resetWachstumsstatus() {
+        this.wachstumsstatus = 0;
     }
 }

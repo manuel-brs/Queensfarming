@@ -160,33 +160,37 @@ public class GUI implements IObserver {
     }
 
     private void plant(ActionEvent event) {
+        if (spiel.getAktionszähler() >= 2) {
+            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
+        } else if (selectedGemüseTyp == null) {
+            spiel.setMessage("Bitte ein Gemüse auswählen!");
+        } else {
+            try {
+                int x_ = Integer.parseInt(x.getText());
+                int y_ = Integer.parseInt(y.getText());
+
+                if (spiel.pflanzen(y_, x_, selectedGemüseTyp)) {
+                    spiel.inkrementAktionszähler();
+                }
+            } catch (NumberFormatException e) {
+                spiel.setMessage("Bitte gebe gültige Koordinaten ein!");
+            }
+        }
+
+        gameController.notifyObservers();
+    }
+
+
+    private void harvest(ActionEvent event) {
         if (spiel.getAktionszähler() < 2) {
             if (selectedGemüseTyp == null) {
                 spiel.setMessage("Bitte ein Gemüse auswählen!");
                 gameController.notifyObservers();
                 return;
             }
-            try {
-                int x_ = Integer.parseInt(x.getText());
-                int y_ = Integer.parseInt(y.getText());
-                if (spiel.pflanzen(y_, x_, selectedGemüseTyp)) {
-                    spiel.inkrementAktionszähler();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                spiel.setMessage("Bitte gebe gültige Koordinaten ein!");
-                gameController.notifyObservers();
+            if (spiel.ernten(Integer.parseInt(y.getText()), Integer.parseInt(x.getText()))) {
+                spiel.inkrementAktionszähler();
             }
-        } else {
-            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
-        }
-        gameController.notifyObservers();
-    }
-
-    private void harvest(ActionEvent event) {
-        if (spiel.getAktionszähler() < 2) {
-            spiel.ernten(Integer.parseInt(x.getText()), Integer.parseInt(y.getText()));
-            spiel.inkrementAktionszähler();
         } else {
             spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
         }
@@ -210,40 +214,37 @@ public class GUI implements IObserver {
     }
 
     private void buyland(ActionEvent event) {
-        if (spiel.getAktionszähler() < 2) {
+        if (spiel.getAktionszähler() >= 2) {
+            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
+        } else {
             try {
                 int x_ = Integer.parseInt(x.getText());
                 int y_ = Integer.parseInt(y.getText());
+
                 if (spiel.kaufeLand(y_, x_)) {
                     spiel.inkrementAktionszähler();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (NumberFormatException e) {
                 spiel.setMessage("Bitte gebe gültige Koordinaten ein!");
-                gameController.notifyObservers();
             }
-        } else {
-            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
-            gameController.notifyObservers();
         }
+
         gameController.notifyObservers();
     }
 
+
     private void buyvegetable(ActionEvent event) {
-        if (spiel.getAktionszähler() < 2) {
-            if (selectedGemüseTyp == null) {
-                spiel.setMessage("Bitte ein Gemüse auswählen!");
-                gameController.notifyObservers();
-                return;
-            }
-            if (spiel.kaufeGemüse(selectedGemüseTyp)) {
-                spiel.inkrementAktionszähler();
-            }
-        } else {
+        if (spiel.getAktionszähler() >= 2) {
             spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
+        } else if (selectedGemüseTyp == null) {
+            spiel.setMessage("Bitte ein Gemüse auswählen!");
+        } else if (spiel.kaufeGemüse(selectedGemüseTyp)) {
+            spiel.inkrementAktionszähler();
         }
+
         gameController.notifyObservers();
     }
+
 
     private void changePlayer(ActionEvent event) {
         spiel.beendeZug();
