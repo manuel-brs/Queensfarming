@@ -13,14 +13,8 @@
 
     <dependencies>
         <dependency>
-            <artifactId>queensfarming-adapters</artifactId>
             <groupId>de.dhbw.ase</groupId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.dhbw.ase</groupId>
-            <artifactId>queensfarming-adapters</artifactId>
+            <artifactId>queensfarming-application</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
