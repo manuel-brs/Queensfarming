@@ -31,30 +31,36 @@ public class PflanzenAktion implements Aktion {
 
         if (scheune.getInventar().getOrDefault(gemüse, 0) < 1) {
             spiel.setMessage("Du hast kein " + gemüse.getGemüsename() + " in deiner Scheune!");
+            spiel.getGameController().notifyObservers();
             return false;
         }
 
         if (kachel == null) {
             spiel.setMessage("Dieses Feld hat noch keine Kachel!");
+            spiel.getGameController().notifyObservers();
             return false;
         }
 
         if (kachel instanceof Scheune) {
             spiel.setMessage("In die Scheune kann nichts angebaut werden!");
+            spiel.getGameController().notifyObservers();
             return false;
         }
 
         if (((BebaubareKachel) kachel).getAngebaut() != null) {
             spiel.setMessage("Dieses Feld ist bereits bebaut!");
+            spiel.getGameController().notifyObservers();
             return false;
         }
 
         if (!((BebaubareKachel) kachel).baueGemüseAn(gemüse)) {
             spiel.setMessage("Gemüse konnte nicht gepflanzt werden!");
+            spiel.getGameController().notifyObservers();
             return false;
         }
 
         scheune.getInventar().put(gemüse, scheune.getInventar().get(gemüse) - 1);
+        spiel.getGameController().notifyObservers();
         return true;
     }
 }

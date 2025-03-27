@@ -71,6 +71,14 @@ public class Spiel {
         return new KaufeLandAktion(aktuellerSpieler, markt, posX, posY, this).execute();
     }
 
+    public void upgradeFabrik() {
+        //TODO
+    }
+
+    public void sellProdukt() {
+        //TODO
+    }
+
     public List<Spieler> getSpieler() {
         return spieler;
     }
@@ -100,5 +108,9 @@ public class Spiel {
     }
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public SpielController getGameController() {
+        return gameController;
     }
 }

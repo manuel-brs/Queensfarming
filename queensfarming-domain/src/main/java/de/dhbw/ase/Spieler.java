@@ -7,6 +7,7 @@ public class Spieler {
     String name;
     private Spielfeld spielfeld;
     int anzahlGold;
+    private Fabrik fabrik = new Fabrik();
     public Spieler(int spielernummer, String name, int startGold, Markt markt) {
         this.spielernummer = spielernummer;
         this.spielfeld = new Spielfeld(markt);
@@ -28,6 +29,10 @@ public class Spieler {
 
     public int getAnzahlGold() {
         return anzahlGold;
+    }
+
+    public Fabrik getFabrik() {
+        return fabrik;
     }
 
     public void setAnzahlGold(int i) {

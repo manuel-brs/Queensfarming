@@ -29,6 +29,7 @@ public class VerkaufeGemüseAktion implements Aktion {
             if (anzahlGemüse < 1) {
                 markt.kaufeGemüse(gemüse);
                 spiel.setMessage("Du hast kein Gemüse zum Verkaufen.");
+                spiel.getGameController().notifyObservers();
                 return false;
             }
 

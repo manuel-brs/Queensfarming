@@ -27,12 +27,14 @@ public class KaufeGemüseAktion implements Aktion {
             if (spieler.getAnzahlGold() < kaufErgebnis.getPreis()) {
                 markt.verkaufeGemüse(gemüse);
                 spiel.setMessage("Du hast nicht genug Geld um das Gemüse zu kaufen.");
+                spiel.getGameController().notifyObservers();
                 return false;
             }
 
             spieler.setAnzahlGold(spieler.getAnzahlGold() - kaufErgebnis.getPreis());
             Scheune scheune = (Scheune) spieler.getSpielfeld().getSpielfeld()[4][2];
             scheune.getInventar().put(gemüse, scheune.getInventar().getOrDefault(gemüse, 0) + 1);
+            spiel.getGameController().notifyObservers();
             return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());

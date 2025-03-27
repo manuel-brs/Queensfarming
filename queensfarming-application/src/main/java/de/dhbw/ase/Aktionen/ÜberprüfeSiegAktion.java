@@ -17,6 +17,7 @@ public class ÜberprüfeSiegAktion implements Aktion {
         // Überprüfen, ob der Spieler genug Gold hat
         if (spieler.getAnzahlGold() >= spiel.getZielGold()) {
             spiel.setMessage("Spieler " + spieler.getName() + " hat gewonnen!!!");
+            spiel.getGameController().notifyObservers();
             return true;
         }
         return false;

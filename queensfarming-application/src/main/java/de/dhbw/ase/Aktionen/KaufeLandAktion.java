@@ -29,6 +29,7 @@ public class KaufeLandAktion implements Aktion {
 
         if (spielfeld.getSpielfeld()[4 - posX][posY + 2] != null) {
             spiel.setMessage("Dieses Feld ist bereits bebaut!");
+            spiel.getGameController().notifyObservers();
             return false;
         }
 
@@ -38,6 +39,7 @@ public class KaufeLandAktion implements Aktion {
             spielfeld.getSpielfeld()[4- posX][posY + 2] = kachelPreis.getKachel();
             return true;
         }
+        spiel.getGameController().notifyObservers();
         return false;
     }
 }

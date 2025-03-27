@@ -27,22 +27,26 @@ public class ErnteAktion implements Aktion {
 
         if (kachel == null) {
             spiel.setMessage("Dieses Feld hat noch keine Kachel!");
+            spiel.getGameController().notifyObservers();
             return false;
         }
 
         if (kachel instanceof Scheune) {
             spiel.setMessage("Die Scheune kann nicht geerntet werden!");
+            spiel.getGameController().notifyObservers();
             return false;
         }
 
         ErntePreis geerntetesGemüse = ((BebaubareKachel) kachel).ernteKachel();
         if (geerntetesGemüse.getGemüseTyp() == null) {
             spiel.setMessage("Kachel konnte nicht geerntet werden!");
+            spiel.getGameController().notifyObservers();
             return false;
         }
 
         scheune.getInventar().put(geerntetesGemüse.getGemüseTyp(), scheune.getInventar().get(geerntetesGemüse.getGemüseTyp()) + geerntetesGemüse.getAnzahl());
         ((BebaubareKachel) kachel).resetWachstumsstatus();
+        spiel.getGameController().notifyObservers();
         return true;
     }
 }

@@ -2,7 +2,6 @@ package de.dhbw.ase;
 
 import de.dhbw.ase.Gemüse.GemüseTyp;
 import de.dhbw.ase.Kachel.BebaubareKachel;
-import de.dhbw.ase.Kachel.Kachel;
 import de.dhbw.ase.Kachel.Scheune;
 
 import javax.swing.*;
@@ -21,6 +20,11 @@ public class GUI implements IObserver {
     static private JButton plant;
     static private TextArea barn;
     static private JFrame frame;
+    static private JPanel fabrikPanel;
+    static private JLabel fabrikLabel;
+    static private JButton upgradeButton;
+    static private JButton sellProdukt;
+    static private JTextField fabriktextfield;
     static private TextArea[][] kachel;
     private final SpielController gameController;
     static JLabel currentPlayerLabel;
@@ -125,6 +129,32 @@ public class GUI implements IObserver {
             }
         }
 
+        fabrikPanel = new JPanel();
+        fabrikPanel.setLayout(new BoxLayout(fabrikPanel, BoxLayout.Y_AXIS));
+        fabrikPanel.setBounds(960, 20, 300, 600);
+
+        fabrikLabel = new JLabel("Fabrik");
+        fabrikLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fabrikPanel.add(fabrikLabel);
+
+        fabriktextfield = new JTextField();
+        fabriktextfield.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        fabriktextfield.setEditable(false);
+        fabrikPanel.add(fabriktextfield);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
+
+        upgradeButton = new JButton("upgrade "+spiel.getSpieler().get(spiel.getSpieleramzug()).getFabrik().getKostenupdate());
+        upgradeButton.addActionListener(e -> upgradeFabrik(fabriktextfield, upgradeButton));
+        buttonPanel.add(upgradeButton);
+
+        sellProdukt = new JButton("Finished Product");
+        sellProdukt.addActionListener(e -> sellProdukt(fabriktextfield, sellProdukt));
+        buttonPanel.add(sellProdukt);
+
+        fabrikPanel.add(buttonPanel);
+
         // Frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
@@ -133,6 +163,7 @@ public class GUI implements IObserver {
         frame.add(boardField);
         frame.add(barn);
         frame.add(plant);
+        frame.add(fabrikPanel);
         frame.add(harvest);
         frame.add(sell);
         frame.add(buyland);
@@ -148,6 +179,26 @@ public class GUI implements IObserver {
         maleSpielfeldNeu(spiel.getSpieler().get(spiel.getSpieleramzug()).getSpielfeld());
     }
 
+    private void sellProdukt(JTextField fabriktextfield, JButton sellProdukt) {
+        if (spiel.getAktionszähler() >= 4) {
+            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
+        } else {
+            spiel.sellProdukt();
+            spiel.inkrementAktionszähler();
+        }
+        gameController.notifyObservers();
+    }
+
+    private void upgradeFabrik(JTextField mitarbeiterField, JButton upgradeButton) {
+        if (spiel.getAktionszähler() >= 4) {
+            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
+        } else {
+            spiel.upgradeFabrik();
+            spiel.inkrementAktionszähler();
+        }
+        gameController.notifyObservers();
+    }
+
     private void handleCheckboxSelection(ItemEvent e, GemüseTyp gemüseTyp) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
             gemüseCheckboxen.forEach((key, checkBox) -> {
@@ -160,8 +211,8 @@ public class GUI implements IObserver {
     }
 
     private void plant(ActionEvent event) {
-        if (spiel.getAktionszähler() >= 2) {
-            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
+        if (spiel.getAktionszähler() >= 4) {
+            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
         } else if (selectedGemüseTyp == null) {
             spiel.setMessage("Bitte ein Gemüse auswählen!");
         } else {
@@ -182,7 +233,7 @@ public class GUI implements IObserver {
 
 
     private void harvest(ActionEvent event) {
-        if (spiel.getAktionszähler() < 2) {
+        if (spiel.getAktionszähler() < 4) {
             if (selectedGemüseTyp == null) {
                 spiel.setMessage("Bitte ein Gemüse auswählen!");
                 gameController.notifyObservers();
@@ -192,13 +243,13 @@ public class GUI implements IObserver {
                 spiel.inkrementAktionszähler();
             }
         } else {
-            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
+            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
         }
         gameController.notifyObservers();
     }
 
     private void sell(ActionEvent event) {
-        if (spiel.getAktionszähler() < 2) {
+        if (spiel.getAktionszähler() < 4) {
             if (selectedGemüseTyp == null) {
                 spiel.setMessage("Bitte ein Gemüse auswählen!");
                 gameController.notifyObservers();
@@ -208,14 +259,14 @@ public class GUI implements IObserver {
                 spiel.inkrementAktionszähler();
             }
         } else {
-            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
+            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
         }
         gameController.notifyObservers();
     }
 
     private void buyland(ActionEvent event) {
-        if (spiel.getAktionszähler() >= 2) {
-            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
+        if (spiel.getAktionszähler() >= 4) {
+            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
         } else {
             try {
                 int x_ = Integer.parseInt(x.getText());
@@ -234,8 +285,8 @@ public class GUI implements IObserver {
 
 
     private void buyvegetable(ActionEvent event) {
-        if (spiel.getAktionszähler() >= 2) {
-            spiel.setMessage("Ein Spieler darf nur 2 Aktionen durchführen!");
+        if (spiel.getAktionszähler() >= 4) {
+            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
         } else if (selectedGemüseTyp == null) {
             spiel.setMessage("Bitte ein Gemüse auswählen!");
         } else if (spiel.kaufeGemüse(selectedGemüseTyp)) {
