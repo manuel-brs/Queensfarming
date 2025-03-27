@@ -29,4 +29,7 @@ public class Spieler {
     public int getAnzahlGold() {
         return anzahlGold;
     }
+
+    public void setAnzahlGold(int i) {
+    }
 }
