@@ -26,7 +26,7 @@ public class PflanzenAktion implements Aktion {
     @Override
     public boolean execute() {
         Spielfeld spielfeld = spieler.getSpielfeld();
-        Kachel kachel = spielfeld.getSpielfeld()[4- posX][posY + 2];
+        Kachel kachel = spielfeld.getSpielfeld()[posX][posY];
         Scheune scheune = (Scheune) spielfeld.getSpielfeld()[4][2];
 
         if (scheune.getInventar().getOrDefault(gemüse, 0) < 1) {

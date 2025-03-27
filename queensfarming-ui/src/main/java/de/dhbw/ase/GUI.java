@@ -8,14 +8,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 
 import static javax.swing.BorderFactory.createLineBorder;
 
 public class GUI implements IObserver {
-    static private JTextField x;
-    static private JTextField y;
     static private JLabel output;
     static private JButton plant;
     static private TextArea barn;
@@ -33,6 +33,8 @@ public class GUI implements IObserver {
     private Spiel spiel;
 
     private GemüseTyp selectedGemüseTyp;
+    private int selectedX = -1;
+    private int selectedY = -1;
 
     public GUI(SpielController controller, Markt markt, Spiel spiel) {
         this.gameController = controller;
@@ -51,8 +53,16 @@ public class GUI implements IObserver {
             for (int j = 0; j < 5; j++) {
                 kachel[i][j] = new TextArea();
                 kachel[i][j].setBackground(Color.white);
-                kachel[i][j].setEnabled(false);
+                kachel[i][j].setEnabled(true);
                 kachel[i][j].setEditable(false);
+                int finalI = i;
+                int finalJ = j;
+                kachel[i][j].addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        handleKachelClick(finalI, finalJ);
+                    }
+                });
             }
         }
 
@@ -94,17 +104,6 @@ public class GUI implements IObserver {
         JButton changeplayer = new JButton("endturn");
         changeplayer.setBounds(50, 600, 100, 30);
         changeplayer.addActionListener(this::changePlayer);
-
-        // Koordinaten
-        JLabel lx = new JLabel("x:");
-        lx.setBounds(590, 700, 30, 30);
-        x = new JTextField();
-        x.setBounds(600, 700, 30, 30);
-
-        JLabel ly = new JLabel("y:");
-        ly.setBounds(640, 700, 30, 30);
-        y = new JTextField();
-        y.setBounds(650, 700, 30, 30);
 
         // Checkboxen für Gemüsearten
         int checkboxYPosition = 700;
@@ -168,15 +167,23 @@ public class GUI implements IObserver {
         frame.add(sell);
         frame.add(buyland);
         frame.add(buyvegetable);
-        frame.add(x);
-        frame.add(y);
-        frame.add(lx);
-        frame.add(ly);
         frame.add(output);
         frame.add(changeplayer);
         frame.add(currentPlayerLabel);
 
         maleSpielfeldNeu(spiel.getSpieler().get(spiel.getSpieleramzug()).getSpielfeld());
+    }
+
+    private void handleKachelClick(int x, int y) {
+        if (x == 4 && y == 2) {
+            return;
+        }
+        if (selectedX != -1 && selectedY != -1) {
+            kachel[selectedX][selectedY].setBackground(Color.white);
+        }
+        selectedX = x;
+        selectedY = y;
+        kachel[selectedX][selectedY].setBackground(Color.lightGray);
     }
 
     private void sellProdukt(JTextField fabriktextfield, JButton sellProdukt) {
@@ -215,31 +222,25 @@ public class GUI implements IObserver {
             spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
         } else if (selectedGemüseTyp == null) {
             spiel.setMessage("Bitte ein Gemüse auswählen!");
+        } else if (selectedX == -1 || selectedY == -1) {
+            spiel.setMessage("Bitte ein Feld auswählen!");
         } else {
-            try {
-                int x_ = Integer.parseInt(x.getText());
-                int y_ = Integer.parseInt(y.getText());
-
-                if (spiel.pflanzen(y_, x_, selectedGemüseTyp)) {
-                    spiel.inkrementAktionszähler();
-                }
-            } catch (NumberFormatException e) {
-                spiel.setMessage("Bitte gebe gültige Koordinaten ein!");
+            if (spiel.pflanzen(selectedX, selectedY, selectedGemüseTyp)) {
+                spiel.inkrementAktionszähler();
             }
         }
 
         gameController.notifyObservers();
     }
 
-
     private void harvest(ActionEvent event) {
         if (spiel.getAktionszähler() < 4) {
-            if (selectedGemüseTyp == null) {
-                spiel.setMessage("Bitte ein Gemüse auswählen!");
+            if (selectedX == -1 || selectedY == -1) {
+                spiel.setMessage("Bitte ein Feld auswählen!");
                 gameController.notifyObservers();
                 return;
             }
-            if (spiel.ernten(Integer.parseInt(y.getText()), Integer.parseInt(x.getText()))) {
+            if (spiel.ernten(selectedX, selectedY)) {
                 spiel.inkrementAktionszähler();
             }
         } else {
@@ -267,22 +268,16 @@ public class GUI implements IObserver {
     private void buyland(ActionEvent event) {
         if (spiel.getAktionszähler() >= 4) {
             spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
+        } else if (selectedX == -1 || selectedY == -1) {
+            spiel.setMessage("Bitte ein Feld auswählen!");
         } else {
-            try {
-                int x_ = Integer.parseInt(x.getText());
-                int y_ = Integer.parseInt(y.getText());
-
-                if (spiel.kaufeLand(y_, x_)) {
-                    spiel.inkrementAktionszähler();
-                }
-            } catch (NumberFormatException e) {
-                spiel.setMessage("Bitte gebe gültige Koordinaten ein!");
+            if (spiel.kaufeLand(selectedX, selectedY)) {
+                spiel.inkrementAktionszähler();
             }
         }
 
         gameController.notifyObservers();
     }
-
 
     private void buyvegetable(ActionEvent event) {
         if (spiel.getAktionszähler() >= 4) {
@@ -295,7 +290,6 @@ public class GUI implements IObserver {
 
         gameController.notifyObservers();
     }
-
 
     private void changePlayer(ActionEvent event) {
         spiel.beendeZug();
@@ -329,7 +323,7 @@ public class GUI implements IObserver {
                 } else {
                     kachel[i][j].setText("");
                     kachel[i][j].setBackground(Color.white);
-                    kachel[i][j].setEnabled(false);
+                    kachel[i][j].setEnabled(true);
                 }
             }
         }
@@ -352,7 +346,6 @@ public class GUI implements IObserver {
             String neuerText = gemüseTyp.getGemüsename() + " (" + entry.getKey().getPreis() + " gold)";
             checkBox.setText(neuerText);
         }
-
 
         frame.revalidate();
         frame.repaint();

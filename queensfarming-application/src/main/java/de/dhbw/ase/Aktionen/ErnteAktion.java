@@ -22,7 +22,7 @@ public class ErnteAktion implements Aktion {
     @Override
     public boolean execute() {
         var spielfeld = spieler.getSpielfeld();
-        var kachel = spielfeld.getSpielfeld()[4 - posX][posY + 2];
+        var kachel = spielfeld.getSpielfeld()[posX][posY];
         Scheune scheune = (Scheune) spielfeld.getSpielfeld()[4][2];
 
         if (kachel == null) {

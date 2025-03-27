@@ -3,7 +3,6 @@ package de.dhbw.ase.Aktionen;
 import de.dhbw.ase.Spiel;
 import de.dhbw.ase.Spieler;
 import de.dhbw.ase.Markt;
-import de.dhbw.ase.Kachel.Kachel;
 import de.dhbw.ase.ValueObject.KachelPreis;
 import de.dhbw.ase.Spielfeld;
 
@@ -27,7 +26,7 @@ public class KaufeLandAktion implements Aktion {
         Spielfeld spielfeld = spieler.getSpielfeld();
         int distanz = spielfeld.berechneScheunenDistanz(posX, posY);
 
-        if (spielfeld.getSpielfeld()[4 - posX][posY + 2] != null) {
+        if (spielfeld.getSpielfeld()[posX][posY] != null) {
             spiel.setMessage("Dieses Feld ist bereits bebaut!");
             spiel.getGameController().notifyObservers();
             return false;
@@ -36,7 +35,7 @@ public class KaufeLandAktion implements Aktion {
         KachelPreis kachelPreis = markt.kaufeLand(distanz);
         if (spieler.getAnzahlGold() >= kachelPreis.getPreis()) {
             spieler.setAnzahlGold(spieler.getAnzahlGold() - kachelPreis.getPreis());
-            spielfeld.getSpielfeld()[4- posX][posY + 2] = kachelPreis.getKachel();
+            spielfeld.getSpielfeld()[posX][posY] = kachelPreis.getKachel();
             return true;
         }
         spiel.getGameController().notifyObservers();
