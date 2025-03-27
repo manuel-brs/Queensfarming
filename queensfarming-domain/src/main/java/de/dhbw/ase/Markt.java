@@ -10,7 +10,7 @@ public class Markt {
     private Kachelstapel kachelstapel;
 
     public Markt() {
-        this.gemüsearten = new GemüseTyp[]{new GemüseTyp("KAROTTEN", 5, 1, 3, 2), new GemüseTyp("SALAT", 3, 2, 6, 4), new GemüseTyp("TOMATEN", 4, 3, 9,6), new GemüseTyp("PILZE", 2, 11, 21, 16)};
+        this.gemüsearten = new GemüseTyp[]{new GemüseTyp("KAROTTEN", 1, 3, 2), new GemüseTyp("SALAT", 2, 6, 4), new GemüseTyp("TOMATEN", 3, 9,6), new GemüseTyp("PILZE", 11, 21, 16), new GemüseTyp("GETREIDE", 1, 5, 2)};
         this.kachelstapel = new Kachelstapel(5, 5, 5, 5, 5, this.gemüsearten);
         this.kachelstapel.mischeStapel();
     }

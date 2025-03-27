@@ -11,7 +11,7 @@ public class Kachelstapel {
 
     public Kachelstapel(int anzahlgärten, int anzahlfelder, int anzahlwälder, int anzahlgroßwälder, int anzahlgroßfelder, GemüseTyp[] gemüsetypen) {
         for (int i = 0; i < anzahlfelder; i++) {
-            this.spielstapel.push(new Feld(new GemüseTyp[]{gemüsetypen[0], gemüsetypen[1]}));
+            this.spielstapel.push(new Feld(new GemüseTyp[]{gemüsetypen[0], gemüsetypen[1], gemüsetypen[4]}));
         }
         for (int i = 0; i < anzahlgärten; i++) {
             this.spielstapel.push(new Garten(new GemüseTyp[]{gemüsetypen[1], gemüsetypen[2]}));
@@ -23,7 +23,7 @@ public class Kachelstapel {
             this.spielstapel.push(new Großerwald(new GemüseTyp[]{gemüsetypen[3]}));
         }
         for (int i = 0; i < anzahlgroßfelder; i++) {
-            this.spielstapel.push(new Großesfeld(new GemüseTyp[]{gemüsetypen[0], gemüsetypen[1]}));
+            this.spielstapel.push(new Großesfeld(new GemüseTyp[]{gemüsetypen[0], gemüsetypen[1], gemüsetypen[4]}));
         }
         Collections.shuffle(spielstapel);
     }
