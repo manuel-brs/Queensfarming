@@ -2,6 +2,7 @@ package de.dhbw.ase;
 
 import de.dhbw.ase.Gemüse.Gemüse;
 import de.dhbw.ase.Gemüse.GemüseTyp;
+import de.dhbw.ase.Kachel.Kachel;
 import de.dhbw.ase.ValueObject.KachelPreis;
 import de.dhbw.ase.ValueObject.KaufErgebnis;
 

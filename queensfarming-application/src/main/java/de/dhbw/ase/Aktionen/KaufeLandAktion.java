@@ -34,9 +34,14 @@ public class KaufeLandAktion implements Aktion {
 
         KachelPreis kachelPreis = markt.kaufeLand(distanz);
         if (spieler.getAnzahlGold() >= kachelPreis.getPreis()) {
+            System.out.println(kachelPreis.getPreis());
             spieler.setAnzahlGold(spieler.getAnzahlGold() - kachelPreis.getPreis());
             spielfeld.getSpielfeld()[posX][posY] = kachelPreis.getKachel();
             return true;
+        } else {
+            markt.getKachelstapel().legeKachelZurück(kachelPreis.getKachel());
+            markt.getKachelstapel().mischeStapel();
+            spiel.setMessage("Nicht genügend Gold!");
         }
         spiel.getGameController().notifyObservers();
         return false;

@@ -22,18 +22,19 @@ public class Fabrik {
             Produkt produkt = null;
             String[] zutaten = null;
             switch (produktname) {
-                case "BROT":
+                case "Brot":
+                    System.out.println("Brot wird produziert");
                     zutaten = new String[]{"GETREIDE"};
                     produkt = new Produkt("BROT", 15, 3);
                     break;
-                case "SALAT":
+                case "Salat":
                     zutaten = new String[]{"SALAT", "TOMATE", "KAROTTE"};
                     produkt = new Produkt("SALAT", 18, 2);
                     break;
                 default:
                     break;
             }
-            if (produkt == null || !checkAndDecrementGemüse(scheune, zutaten)) {
+            if (produkt == null) {
                 return false;
             }
             produkteinbearbeitung.put(produkt, 0);
@@ -43,26 +44,7 @@ public class Fabrik {
         return false;
     }
 
-    private boolean checkAndDecrementGemüse(Scheune scheune, String[] gemüseNamen) {
-        Map<GemüseTyp, Integer> tempInventar = new HashMap<>(scheune.getInventar());
-        for (String gemüseName : gemüseNamen) {
-            boolean found = false;
-            for (GemüseTyp gemüse : tempInventar.keySet()) {
-                if (gemüse.getGemüsename().equals(gemüseName) && tempInventar.get(gemüse) > 0) {
-                    tempInventar.put(gemüse, tempInventar.get(gemüse) - 1);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                return false;
-            }
-        }
-        scheune.getInventar().putAll(tempInventar);
-        return true;
-    }
-
-    private void checkeFertigeBrote() {
+    public void checkeFertigeBrote() {
         for (Map.Entry<Produkt, Integer> entry : produkteinbearbeitung.entrySet()) {
             if (entry.getValue() >= entry.getKey().getRundenzumbacken()) {
                 produkteinbearbeitung.remove(entry.getKey());

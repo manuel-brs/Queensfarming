@@ -36,5 +36,6 @@ public class Spieler {
     }
 
     public void setAnzahlGold(int i) {
+        this.anzahlGold = i;
     }
 }

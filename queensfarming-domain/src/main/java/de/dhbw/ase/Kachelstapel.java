@@ -35,4 +35,8 @@ public class Kachelstapel {
     public Kachel zieheKachel() {
         return spielstapel.pop();
     }
+
+    public void legeKachelZurück(Kachel kachel) {
+        spielstapel.push(kachel);
+    }
 }

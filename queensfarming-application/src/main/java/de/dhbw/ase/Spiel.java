@@ -2,6 +2,7 @@ package de.dhbw.ase;
 
 import de.dhbw.ase.Aktionen.*;
 import de.dhbw.ase.Gemüse.GemüseTyp;
+import de.dhbw.ase.ValueObject.Produkt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ public class Spiel {
         spieler.forEach(s -> s.getSpielfeld().wachsen());
         gameController.notifyObservers();
         aktionszähler = 0;
+        this.spieler.get(spieleramzug).getFabrik().checkeFertigeBrote();
     }
 
     public boolean kaufeGemüse(GemüseTyp gemüse) {
@@ -67,16 +69,20 @@ public class Spiel {
         return new VerkaufeGemüseAktion(aktuellerSpieler, markt, gemüse, this).execute();
     }
 
+    public boolean produziereProdukt(String produktname) {
+        return new ProduziereProduktAktion(produktname, this).execute();
+    }
+
     public boolean kaufeLand(int posX, int posY) {
         return new KaufeLandAktion(aktuellerSpieler, markt, posX, posY, this).execute();
     }
 
-    public void upgradeFabrik() {
-        //TODO
+    public boolean upgradeFabrik() {
+        return new UpgradeFarbrikAktion(this).execute();
     }
 
-    public void sellProdukt() {
-        //TODO
+    public boolean sellProdukt() {
+        return new VerkaufeProduktAktion(this).execute();
     }
 
     public List<Spieler> getSpieler() {

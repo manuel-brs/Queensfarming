@@ -24,7 +24,10 @@ public class GUI implements IObserver {
     static private JLabel fabrikLabel;
     static private JButton upgradeButton;
     static private JButton sellProdukt;
-    static private JTextField fabriktextfield;
+    static private JTextArea fabriktextarea;
+    static private JCheckBox salatCheckbox;
+    static private JCheckBox brotCheckbox;
+    static private JButton produzierenButton;
     static private TextArea[][] kachel;
     private final SpielController gameController;
     static JLabel currentPlayerLabel;
@@ -136,22 +139,46 @@ public class GUI implements IObserver {
         fabrikLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         fabrikPanel.add(fabrikLabel);
 
-        fabriktextfield = new JTextField();
-        fabriktextfield.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-        fabriktextfield.setEditable(false);
-        fabrikPanel.add(fabriktextfield);
+        fabriktextarea = new JTextArea(5, 20);
+        fabriktextarea.setPreferredSize(new Dimension(250, 100));
+        fabriktextarea.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        fabriktextarea.setEditable(false);
+        fabrikPanel.add(fabriktextarea);
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 2, 2));
 
         upgradeButton = new JButton("upgrade "+spiel.getSpieler().get(spiel.getSpieleramzug()).getFabrik().getKostenupdate());
-        upgradeButton.addActionListener(e -> upgradeFabrik(fabriktextfield, upgradeButton));
+        upgradeButton.addActionListener(e -> upgradeFabrik(e));
         buttonPanel.add(upgradeButton);
 
-        sellProdukt = new JButton("Finished Product");
-        sellProdukt.addActionListener(e -> sellProdukt(fabriktextfield, sellProdukt));
+        sellProdukt = new JButton("Verkaufe Finished Product");
+        sellProdukt.addActionListener(e -> sellProdukt(e));
         buttonPanel.add(sellProdukt);
 
+
+        salatCheckbox = new JCheckBox("Salat (1 Salat, 1 Karotte, 1 Tomate)");
+        brotCheckbox = new JCheckBox("Brot (2 Getreide)");
+        produzierenButton = new JButton("Produzieren");
+
+        salatCheckbox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                brotCheckbox.setSelected(false);
+            }
+        });
+
+        brotCheckbox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                salatCheckbox.setSelected(false);
+            }
+        });
+
+        produzierenButton.addActionListener(e -> produziereProdukt(e));
+
+
+        buttonPanel.add(salatCheckbox);
+        buttonPanel.add(brotCheckbox);
+        buttonPanel.add(produzierenButton);
         fabrikPanel.add(buttonPanel);
 
         // Frame
@@ -174,6 +201,25 @@ public class GUI implements IObserver {
         maleSpielfeldNeu(spiel.getSpieler().get(spiel.getSpieleramzug()).getSpielfeld());
     }
 
+    private void produziereProdukt(ActionEvent e) {
+        if (spiel.getAktionszähler() >= 4) {
+            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
+        } else {
+            if (salatCheckbox.isSelected()) {
+                if(spiel.produziereProdukt("Salat")){
+                    spiel.inkrementAktionszähler();
+                }
+            } else if (brotCheckbox.isSelected()) {
+                if(spiel.produziereProdukt("Brot")){
+                    spiel.inkrementAktionszähler();
+                }
+            } else {
+                spiel.setMessage("Bitte ein Produkt auswählen!");
+            }
+        }
+        gameController.notifyObservers();
+    }
+
     private void handleKachelClick(int x, int y) {
         if (x == 4 && y == 2) {
             return;
@@ -186,22 +232,24 @@ public class GUI implements IObserver {
         kachel[selectedX][selectedY].setBackground(Color.lightGray);
     }
 
-    private void sellProdukt(JTextField fabriktextfield, JButton sellProdukt) {
+    private void sellProdukt(ActionEvent event) {
         if (spiel.getAktionszähler() >= 4) {
             spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
         } else {
-            spiel.sellProdukt();
-            spiel.inkrementAktionszähler();
+            if(spiel.sellProdukt()){
+                spiel.inkrementAktionszähler();
+            }
         }
         gameController.notifyObservers();
     }
 
-    private void upgradeFabrik(JTextField mitarbeiterField, JButton upgradeButton) {
+    private void upgradeFabrik(ActionEvent event) {
         if (spiel.getAktionszähler() >= 4) {
             spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
         } else {
-            spiel.upgradeFabrik();
-            spiel.inkrementAktionszähler();
+            if(spiel.upgradeFabrik()){
+                spiel.inkrementAktionszähler();
+            }
         }
         gameController.notifyObservers();
     }
@@ -346,6 +394,22 @@ public class GUI implements IObserver {
             String neuerText = gemüseTyp.getGemüsename() + " (" + entry.getKey().getPreis() + " gold)";
             checkBox.setText(neuerText);
         }
+
+
+        // Fabrik aktualisieren
+        if (spiel.getAktuellerSpieler().getFabrik().getLager().isEmpty() || spiel.getAktuellerSpieler().getFabrik().getLager().peek() == null) {
+            fabriktextarea.setText("Arbeiter: " + spiel.getAktuellerSpieler().getFabrik().getAnzahlArbeiter() + "\n" +
+                    "Produkte in Bearbeitung: " + spiel.getAktuellerSpieler().getFabrik().getProdukteinbearbeitung().size() + "\n" +
+                    "Lager: " + spiel.getAktuellerSpieler().getFabrik().getLager().size() + " Produkte fertig\n");
+        } else {
+            fabriktextarea.setText("Arbeiter: " + spiel.getAktuellerSpieler().getFabrik().getAnzahlArbeiter() + "\n" +
+                    "Produkte in Bearbeitung: " + spiel.getAktuellerSpieler().getFabrik().getProdukteinbearbeitung().size() + "\n" +
+                    "Lager: " + spiel.getAktuellerSpieler().getFabrik().getLager().size() + " Produkte fertig\n" +
+                    spiel.getAktuellerSpieler().getFabrik().getLager().peek().getName() + " " +
+                    spiel.getAktuellerSpieler().getFabrik().getLager().peek().getPreis() + " wert");
+        }
+
+        upgradeButton.setText("Upgrade " + spiel.getAktuellerSpieler().getFabrik().getKostenupdate());
 
         frame.revalidate();
         frame.repaint();
