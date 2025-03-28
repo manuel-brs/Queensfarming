@@ -37,6 +37,7 @@ public class KaufeLandAktion implements Aktion {
             System.out.println(kachelPreis.getPreis());
             spieler.setAnzahlGold(spieler.getAnzahlGold() - kachelPreis.getPreis());
             spielfeld.getSpielfeld()[posX][posY] = kachelPreis.getKachel();
+            spiel.getGameController().notifyObservers();
             return true;
         } else {
             markt.getKachelstapel().legeKachelZurück(kachelPreis.getKachel());

@@ -233,25 +233,11 @@ public class GUI implements IObserver {
     }
 
     private void sellProdukt(ActionEvent event) {
-        if (spiel.getAktionszähler() >= 4) {
-            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
-        } else {
-            if(spiel.sellProdukt()){
-                spiel.inkrementAktionszähler();
-            }
-        }
-        gameController.notifyObservers();
+        spiel.sellProdukt();
     }
 
     private void upgradeFabrik(ActionEvent event) {
-        if (spiel.getAktionszähler() >= 4) {
-            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
-        } else {
-            if(spiel.upgradeFabrik()){
-                spiel.inkrementAktionszähler();
-            }
-        }
-        gameController.notifyObservers();
+        spiel.upgradeFabrik();
     }
 
     private void handleCheckboxSelection(ItemEvent e, GemüseTyp gemüseTyp) {
@@ -266,82 +252,27 @@ public class GUI implements IObserver {
     }
 
     private void plant(ActionEvent event) {
-        if (spiel.getAktionszähler() >= 4) {
-            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
-        } else if (selectedGemüseTyp == null) {
-            spiel.setMessage("Bitte ein Gemüse auswählen!");
-        } else if (selectedX == -1 || selectedY == -1) {
-            spiel.setMessage("Bitte ein Feld auswählen!");
-        } else {
-            if (spiel.pflanzen(selectedX, selectedY, selectedGemüseTyp)) {
-                spiel.inkrementAktionszähler();
-            }
-        }
-
-        gameController.notifyObservers();
+        spiel.pflanzen(selectedX, selectedY, selectedGemüseTyp);
     }
 
     private void harvest(ActionEvent event) {
-        if (spiel.getAktionszähler() < 4) {
-            if (selectedX == -1 || selectedY == -1) {
-                spiel.setMessage("Bitte ein Feld auswählen!");
-                gameController.notifyObservers();
-                return;
-            }
-            if (spiel.ernten(selectedX, selectedY)) {
-                spiel.inkrementAktionszähler();
-            }
-        } else {
-            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
-        }
-        gameController.notifyObservers();
+        spiel.ernten(selectedX, selectedY);
     }
 
     private void sell(ActionEvent event) {
-        if (spiel.getAktionszähler() < 4) {
-            if (selectedGemüseTyp == null) {
-                spiel.setMessage("Bitte ein Gemüse auswählen!");
-                gameController.notifyObservers();
-                return;
-            }
-            if (spiel.verkaufeGemüse(selectedGemüseTyp)) {
-                spiel.inkrementAktionszähler();
-            }
-        } else {
-            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
-        }
-        gameController.notifyObservers();
+        spiel.verkaufeGemüse(selectedGemüseTyp);
     }
 
     private void buyland(ActionEvent event) {
-        if (spiel.getAktionszähler() >= 4) {
-            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
-        } else if (selectedX == -1 || selectedY == -1) {
-            spiel.setMessage("Bitte ein Feld auswählen!");
-        } else {
-            if (spiel.kaufeLand(selectedX, selectedY)) {
-                spiel.inkrementAktionszähler();
-            }
-        }
-
-        gameController.notifyObservers();
+        spiel.kaufeLand(selectedX, selectedY);
     }
 
     private void buyvegetable(ActionEvent event) {
-        if (spiel.getAktionszähler() >= 4) {
-            spiel.setMessage("Ein Spieler darf nur 4 Aktionen durchführen!");
-        } else if (selectedGemüseTyp == null) {
-            spiel.setMessage("Bitte ein Gemüse auswählen!");
-        } else if (spiel.kaufeGemüse(selectedGemüseTyp)) {
-            spiel.inkrementAktionszähler();
-        }
-
-        gameController.notifyObservers();
+        spiel.kaufeGemüse(selectedGemüseTyp);
     }
 
     private void changePlayer(ActionEvent event) {
         spiel.beendeZug();
-        maleSpielfeldNeu(spiel.getAktuellerSpieler().getSpielfeld());
         setzeAktuellerSpieler(spiel.getAktuellerSpieler());
     }
 

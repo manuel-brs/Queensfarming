@@ -13,10 +13,8 @@ public class Spielfeld {
         this.spielfeld[4][2] = new Scheune(markt.getGemüsearten());
     }
     public int berechneScheunenDistanz(int x, int y) {
-        System.out.println("x: " + x + " y: " + y);
         x = 4-x;
         y -=2;
-        System.out.println("x: " + x + " y: " + y);
         return (int) Math.sqrt(x * x + y * y);
     }
 

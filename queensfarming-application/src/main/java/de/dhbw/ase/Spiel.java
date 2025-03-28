@@ -54,19 +54,59 @@ public class Spiel {
     }
 
     public boolean kaufeGemüse(GemüseTyp gemüse) {
-        return new KaufeGemüseAktion(aktuellerSpieler, markt, gemüse, this).execute();
+        if (!überprüfeActionCounter()) {
+            return false;
+        } else if ( gemüse == null) {
+            message = "Bitte wähle ein Gemüse aus!";
+            gameController.notifyObservers();
+            return false;
+        }
+        if(new KaufeGemüseAktion(aktuellerSpieler, markt, gemüse, this).execute()) {
+            aktionszähler++;
+            return true;
+        }
+        return false;
     }
 
     public boolean pflanzen(int posX, int posY, GemüseTyp gemüse) {
-        return new PflanzenAktion(aktuellerSpieler, posX, posY, gemüse, this).execute();
+        if (!überprüfeActionCounter()) {
+            return false;
+        } else if (posX == -1 || posY == -1) {
+            message = "Bitte wähle ein Feld aus!";
+            gameController.notifyObservers();
+            return false;
+        }
+        if(new PflanzenAktion(aktuellerSpieler, posX, posY, gemüse, this).execute()) {
+            aktionszähler++;
+            return true;
+        }
+        return false;
     }
 
     public boolean ernten(int posX, int posY) {
-        return new ErnteAktion(aktuellerSpieler, posX, posY, this).execute();
+        if (!überprüfeActionCounter()) {
+            return false;
+        } else if (posX == -1 || posY == -1) {
+            message = "Bitte wähle ein Feld aus!";
+            gameController.notifyObservers();
+            return false;
+        }
+        if(new ErnteAktion(aktuellerSpieler, posX, posY, this).execute()) {
+            aktionszähler++;
+            return true;
+        }
+        return false;
     }
 
     public boolean verkaufeGemüse(GemüseTyp gemüse) {
-        return new VerkaufeGemüseAktion(aktuellerSpieler, markt, gemüse, this).execute();
+        if (!überprüfeActionCounter()) {
+            return false;
+        }
+        if (new VerkaufeGemüseAktion(aktuellerSpieler, markt, gemüse, this).execute()) {
+            aktionszähler++;
+            return true;
+        }
+        return false;
     }
 
     public boolean produziereProdukt(String produktname) {
@@ -74,15 +114,51 @@ public class Spiel {
     }
 
     public boolean kaufeLand(int posX, int posY) {
-        return new KaufeLandAktion(aktuellerSpieler, markt, posX, posY, this).execute();
+        if (!überprüfeActionCounter()) {
+            return false;
+        } else if (posX == -1 || posY == -1) {
+            message = "Bitte wähle ein Feld aus!";
+            gameController.notifyObservers();
+            return false;
+        } else {
+            if(new KaufeLandAktion(aktuellerSpieler, markt, posX, posY, this).execute()) {
+                aktionszähler++;
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean upgradeFabrik() {
-        return new UpgradeFarbrikAktion(this).execute();
+        if (!überprüfeActionCounter()) {
+            return false;
+        }
+        if (new UpgradeFarbrikAktion(this).execute()) {
+            aktionszähler++;
+            return true;
+        }
+        return false;
     }
 
     public boolean sellProdukt() {
-        return new VerkaufeProduktAktion(this).execute();
+        if (!überprüfeActionCounter()) {
+            return false;
+        }
+        if(new VerkaufeProduktAktion(this).execute()) {
+            aktionszähler++;
+            return true;
+        }
+        return false;
+    }
+
+
+    private boolean überprüfeActionCounter() {
+        if (aktionszähler > 3) {
+            message = "Du hast bereits 4 Aktionen durchgeführt!";
+            gameController.notifyObservers();
+            return false;
+        }
+        return true;
     }
 
     public List<Spieler> getSpieler() {
