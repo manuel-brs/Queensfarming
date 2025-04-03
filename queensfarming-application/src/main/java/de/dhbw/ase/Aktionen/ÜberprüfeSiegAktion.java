@@ -3,7 +3,7 @@ package de.dhbw.ase.Aktionen;
 import de.dhbw.ase.Spiel;
 import de.dhbw.ase.Spieler;
 
-public class ÜberprüfeSiegAktion implements Aktion {
+public class ÜberprüfeSiegAktion extends Aktion {
     private final Spieler spieler;
     private final Spiel spiel;
 

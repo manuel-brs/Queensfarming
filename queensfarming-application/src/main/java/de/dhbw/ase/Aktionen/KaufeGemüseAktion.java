@@ -7,7 +7,7 @@ import de.dhbw.ase.Spieler;
 import de.dhbw.ase.ValueObject.KaufErgebnis;
 import de.dhbw.ase.Kachel.Scheune;
 
-public class KaufeGemüseAktion implements Aktion {
+public class KaufeGemüseAktion extends Aktion {
     private final Spieler spieler;
     private final Markt markt;
     private final GemüseTyp gemüse;

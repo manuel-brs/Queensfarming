@@ -3,7 +3,7 @@ package de.dhbw.ase.Aktionen;
 import de.dhbw.ase.Spiel;
 import de.dhbw.ase.ValueObject.Produkt;
 
-public class VerkaufeProduktAktion implements Aktion {
+public class VerkaufeProduktAktion extends Aktion {
     private Spiel spiel;
 
     public VerkaufeProduktAktion(Spiel spiel) {

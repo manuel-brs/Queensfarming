@@ -8,7 +8,7 @@ import de.dhbw.ase.Kachel.BebaubareKachel;
 import de.dhbw.ase.Kachel.Scheune;
 import de.dhbw.ase.Spielfeld;
 
-public class PflanzenAktion implements Aktion {
+public class PflanzenAktion extends Aktion {
     private final Spieler spieler;
     private final int posX;
     private final int posY;

@@ -2,7 +2,6 @@ package de.dhbw.ase;
 
 import de.dhbw.ase.Aktionen.*;
 import de.dhbw.ase.Gemüse.GemüseTyp;
-import de.dhbw.ase.ValueObject.Produkt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,21 +46,21 @@ public class Spiel {
         }
         spieleramzug = (spieleramzug + 1) % spieler.size();
         aktuellerSpieler = spieler.get(spieleramzug);
-        spieler.forEach(s -> s.getSpielfeld().wachsen());
+        if (spieleramzug == 0) {
+            spieler.forEach(s -> s.getSpielfeld().wachsen());
+        }
         gameController.notifyObservers();
         aktionszähler = 0;
         this.spieler.get(spieleramzug).getFabrik().checkeFertigeBrote();
     }
 
     public boolean kaufeGemüse(GemüseTyp gemüse) {
-        if (!überprüfeActionCounter()) {
-            return false;
-        } else if ( gemüse == null) {
+        if ( gemüse == null) {
             message = "Bitte wähle ein Gemüse aus!";
             gameController.notifyObservers();
             return false;
         }
-        if(new KaufeGemüseAktion(aktuellerSpieler, markt, gemüse, this).execute()) {
+        if(new KaufeGemüseAktion(aktuellerSpieler, markt, gemüse, this).actionExec(this)) {
             aktionszähler++;
             return true;
         }
@@ -69,14 +68,12 @@ public class Spiel {
     }
 
     public boolean pflanzen(int posX, int posY, GemüseTyp gemüse) {
-        if (!überprüfeActionCounter()) {
-            return false;
-        } else if (posX == -1 || posY == -1) {
+        if (posX == -1 || posY == -1) {
             message = "Bitte wähle ein Feld aus!";
             gameController.notifyObservers();
             return false;
         }
-        if(new PflanzenAktion(aktuellerSpieler, posX, posY, gemüse, this).execute()) {
+        if(new PflanzenAktion(aktuellerSpieler, posX, posY, gemüse, this).actionExec(this)) {
             aktionszähler++;
             return true;
         }
@@ -84,14 +81,12 @@ public class Spiel {
     }
 
     public boolean ernten(int posX, int posY) {
-        if (!überprüfeActionCounter()) {
-            return false;
-        } else if (posX == -1 || posY == -1) {
+        if (posX == -1 || posY == -1) {
             message = "Bitte wähle ein Feld aus!";
             gameController.notifyObservers();
             return false;
         }
-        if(new ErnteAktion(aktuellerSpieler, posX, posY, this).execute()) {
+        if(new ErnteAktion(aktuellerSpieler, posX, posY, this).actionExec(this)) {
             aktionszähler++;
             return true;
         }
@@ -99,10 +94,7 @@ public class Spiel {
     }
 
     public boolean verkaufeGemüse(GemüseTyp gemüse) {
-        if (!überprüfeActionCounter()) {
-            return false;
-        }
-        if (new VerkaufeGemüseAktion(aktuellerSpieler, markt, gemüse, this).execute()) {
+        if (new VerkaufeGemüseAktion(aktuellerSpieler, markt, gemüse, this).actionExec(this)) {
             aktionszähler++;
             return true;
         }
@@ -110,18 +102,16 @@ public class Spiel {
     }
 
     public boolean produziereProdukt(String produktname) {
-        return new ProduziereProduktAktion(produktname, this).execute();
+        return new ProduziereProduktAktion(produktname, this).actionExec(this);
     }
 
     public boolean kaufeLand(int posX, int posY) {
-        if (!überprüfeActionCounter()) {
-            return false;
-        } else if (posX == -1 || posY == -1) {
+        if (posX == -1 || posY == -1) {
             message = "Bitte wähle ein Feld aus!";
             gameController.notifyObservers();
             return false;
         } else {
-            if(new KaufeLandAktion(aktuellerSpieler, markt, posX, posY, this).execute()) {
+            if(new KaufeLandAktion(aktuellerSpieler, markt, posX, posY, this).actionExec(this)) {
                 aktionszähler++;
                 return true;
             }
@@ -130,10 +120,7 @@ public class Spiel {
     }
 
     public boolean upgradeFabrik() {
-        if (!überprüfeActionCounter()) {
-            return false;
-        }
-        if (new UpgradeFarbrikAktion(this).execute()) {
+        if (new UpgradeFarbrikAktion(this).actionExec(this)) {
             aktionszähler++;
             return true;
         }
@@ -141,24 +128,11 @@ public class Spiel {
     }
 
     public boolean sellProdukt() {
-        if (!überprüfeActionCounter()) {
-            return false;
-        }
-        if(new VerkaufeProduktAktion(this).execute()) {
+        if(new VerkaufeProduktAktion(this).actionExec(this)) {
             aktionszähler++;
             return true;
         }
         return false;
-    }
-
-
-    private boolean überprüfeActionCounter() {
-        if (aktionszähler > 3) {
-            message = "Du hast bereits 4 Aktionen durchgeführt!";
-            gameController.notifyObservers();
-            return false;
-        }
-        return true;
     }
 
     public List<Spieler> getSpieler() {

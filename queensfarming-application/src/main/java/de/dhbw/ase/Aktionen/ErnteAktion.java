@@ -6,7 +6,7 @@ import de.dhbw.ase.Kachel.BebaubareKachel;
 import de.dhbw.ase.Kachel.Scheune;
 import de.dhbw.ase.ValueObject.ErntePreis;
 
-public class ErnteAktion implements Aktion {
+public class ErnteAktion extends Aktion {
     private final Spieler spieler;
     private final int posX;
     private final int posY;

@@ -4,7 +4,7 @@ import de.dhbw.ase.Fabrik;
 import de.dhbw.ase.Spiel;
 import de.dhbw.ase.Spieler;
 
-public class UpdateFabrik implements Aktion {
+public class UpdateFabrik extends Aktion {
     private final Fabrik fabrik;
     private final Spiel spiel;
     private final Spieler spieler;

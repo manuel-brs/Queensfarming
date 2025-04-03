@@ -6,7 +6,7 @@ import de.dhbw.ase.Spieler;
 import java.util.Map;
 import java.util.HashMap;
 
-public class ProduziereProduktAktion implements Aktion {
+public class ProduziereProduktAktion extends Aktion {
     private final String produkt;
     private final Spiel spiel;
 

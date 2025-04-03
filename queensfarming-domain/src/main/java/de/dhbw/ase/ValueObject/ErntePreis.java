@@ -5,8 +5,8 @@ import de.dhbw.ase.Gemüse.GemüseTyp;
 import java.util.Objects;
 
 public class ErntePreis {
-    GemüseTyp gemüseTyp;
-    int anzahl;
+    final private GemüseTyp gemüseTyp;
+    final private int anzahl;
 
     public ErntePreis(GemüseTyp gemüseTyp, int anzahl) {
         this.gemüseTyp = gemüseTyp;

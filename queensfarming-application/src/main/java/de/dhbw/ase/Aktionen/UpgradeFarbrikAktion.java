@@ -2,7 +2,7 @@ package de.dhbw.ase.Aktionen;
 
 import de.dhbw.ase.Spiel;
 
-public class UpgradeFarbrikAktion implements Aktion {
+public class UpgradeFarbrikAktion extends Aktion {
     private Spiel spiel;
 
     public UpgradeFarbrikAktion(Spiel spiel) {

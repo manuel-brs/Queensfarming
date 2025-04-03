@@ -6,7 +6,7 @@ import de.dhbw.ase.Markt;
 import de.dhbw.ase.ValueObject.KachelPreis;
 import de.dhbw.ase.Spielfeld;
 
-public class KaufeLandAktion implements Aktion {
+public class KaufeLandAktion extends Aktion {
     private final Spieler spieler;
     private final Markt markt;
     private final int posX;
