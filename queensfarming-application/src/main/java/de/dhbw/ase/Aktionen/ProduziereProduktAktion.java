@@ -1,8 +1,8 @@
-package de.dhbw.ase.Aktionen;
+/*package de.dhbw.ase.Aktionen;
 
-import de.dhbw.ase.Kachel.Scheune;
-import de.dhbw.ase.Spiel;
-import de.dhbw.ase.Spieler;
+import de.dhbw.ase.entities.Kachel.Scheune;
+import de.dhbw.ase.entities.Spiel;
+import de.dhbw.ase.entities.Spieler;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -25,36 +25,6 @@ public class ProduziereProduktAktion extends Aktion {
 
     @Override
     public boolean execute() {
-        Spieler spieler = spiel.getSpieler().get(spiel.getSpieleramzug());
-        Scheune scheune = (Scheune) spieler.getSpielfeld().getSpielfeld()[4][2];
-
-        Map<String, Integer> rezept = REZEPTUREN.get(produkt);
-        if (rezept == null) {
-            return false;
-        }
-
-        if (!hatAusreichendeZutaten(scheune, rezept)) {
-            spiel.setMessage("Nicht genügend Zutaten!");
-            spiel.getGameController().notifyObservers();
-            return false;
-        }
-
-        scheune.getInventar().forEach((gemüse, anzahl) -> {
-            System.out.println(gemüse.getGemüsename() + ": " + anzahl);
-        });
-
-        if(!spieler.getFabrik().produziereProdukt(produkt, scheune)) {
-            spiel.setMessage("Nicht genügend Arbeiter!");
-            spiel.getGameController().notifyObservers();
-            return false;
-        }
-        scheune.getInventar().forEach((gemüse, anzahl) -> {
-            System.out.println(gemüse.getGemüsename() + ": " + anzahl);
-        });
-        entnehmeZutaten(scheune, rezept);
-
-        spiel.getGameController().notifyObservers();
-        System.out.println("Produziere " + produkt);
         return true;
     }
 
@@ -83,3 +53,4 @@ public class ProduziereProduktAktion extends Aktion {
         });
     }
 }
+*/

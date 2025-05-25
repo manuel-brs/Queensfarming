@@ -1,6 +1,6 @@
-package de.dhbw.ase.Aktionen;
+/*package de.dhbw.ase.Aktionen;
 
-import de.dhbw.ase.Spiel;
+import de.dhbw.ase.entities.Spiel;
 
 public class UpgradeFarbrikAktion extends Aktion {
     private Spiel spiel;
@@ -22,3 +22,4 @@ public class UpgradeFarbrikAktion extends Aktion {
         return false;
     }
 }
+*/

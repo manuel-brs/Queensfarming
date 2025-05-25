@@ -1,8 +1,8 @@
-package de.dhbw.ase.Aktionen;
+/*package de.dhbw.ase.Aktionen;
 
-import de.dhbw.ase.Fabrik;
-import de.dhbw.ase.Spiel;
-import de.dhbw.ase.Spieler;
+import de.dhbw.ase.entities.Fabrik;
+import de.dhbw.ase.entities.Spiel;
+import de.dhbw.ase.entities.Spieler;
 
 public class UpdateFabrik extends Aktion {
     private final Fabrik fabrik;
@@ -31,3 +31,4 @@ public class UpdateFabrik extends Aktion {
         return false;
     }
 }
+*/

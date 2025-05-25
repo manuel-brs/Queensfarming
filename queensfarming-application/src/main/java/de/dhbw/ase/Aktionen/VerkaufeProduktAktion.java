@@ -1,7 +1,7 @@
-package de.dhbw.ase.Aktionen;
+/*package de.dhbw.ase.Aktionen;
 
-import de.dhbw.ase.Spiel;
-import de.dhbw.ase.ValueObject.Produkt;
+import de.dhbw.ase.entities.Spiel;
+import de.dhbw.ase.valueobjects.Produkt;
 
 public class VerkaufeProduktAktion extends Aktion {
     private Spiel spiel;
@@ -24,3 +24,4 @@ public class VerkaufeProduktAktion extends Aktion {
         return false;
     }
 }
+*/

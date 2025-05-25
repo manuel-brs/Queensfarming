@@ -1,11 +1,25 @@
 package de.dhbw.ase;
 
+import de.dhbw.ase.entities.Markt;
+import de.dhbw.ase.exceptions.GameNotFoundException;
+import de.dhbw.ase.repositories.*;
+import de.dhbw.ase.repository.MarktRepositoryImpl;
+import de.dhbw.ase.repository.SpielRepositoryImpl;
+import de.dhbw.ase.repository.SpielerManagerRepositoryImpl;
+import de.dhbw.ase.repository.SpielfeldRepositoryImpl;
+import de.dhbw.ase.repository.FabrikRepositoryImpl;
+import de.dhbw.ase.usecases.AgrarModulImpl;
+import de.dhbw.ase.usecases.HandelGemüse;
+import de.dhbw.ase.usecases.HandelGemüseImpl;
+import de.dhbw.ase.usecases.KaufeLandImpl;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Starter {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws GameNotFoundException {
         Scanner scanner = new Scanner(System.in);
 
         Markt markt = new Markt();
@@ -43,11 +57,11 @@ public class Starter {
 
 
         // Spielernamen abfragen
-        List<Spieler> players = new ArrayList<>();
+        List<String> players = new ArrayList<>();
         for (int i = 0; i < playerCount; i++) {
             System.out.print("Eingabe des Spieler Namen's " + i + ":\n> ");
             String nextLine = scanner.nextLine();
-            players.add(new Spieler(i, nextLine, startGold, markt));
+            players.add(nextLine);
         }
 
         // Bestätigung der Eingaben
@@ -55,14 +69,48 @@ public class Starter {
         System.out.println("Spieler: " + players);
         System.out.println("Start Gold: " + startGold);
         System.out.println("Ziel Gold: " + goalGold);
+        System.out.println("enter \"show actions\" to see all actions");
 
-        scanner.close();
+        // Spiel starten
+        SpielRepository spielRepository = new SpielRepositoryImpl();
+        MarktRepository marktRepository = new MarktRepositoryImpl();
+        SpielerManagerRepository spielerManagerRepository = new SpielerManagerRepositoryImpl();
+        SpielfeldRepository spielfeldRepository = new SpielfeldRepositoryImpl();
+        FabrikRepository fabrikRepository = new FabrikRepositoryImpl();
 
-        SpielController controller = new SpielController();
+        // usecases
+        AgrarModulImpl agrarModul = new AgrarModulImpl(
+                spielRepository,
+                spielfeldRepository,
+                marktRepository,
+                spielerManagerRepository
+        );
 
-        Spiel spiel = new Spiel(controller, goalGold);
-        players.forEach(spiel::spielerHinzufügen);
-        spiel.startSpiel();
-        new GUI(controller, markt, spiel);
+        HandelGemüse handelGemüse = new HandelGemüseImpl(
+                spielRepository,
+                spielfeldRepository,
+                marktRepository,
+                spielerManagerRepository
+        );
+
+        KaufeLandImpl kaufeLand = new KaufeLandImpl(
+                spielRepository,
+                spielfeldRepository,
+                marktRepository,
+                spielerManagerRepository
+        );
+
+        ConsoleAdapter consoleAdapter = new ConsoleAdapter(
+                spielRepository,
+                marktRepository,
+                spielerManagerRepository,
+                spielfeldRepository,
+                agrarModul,
+                handelGemüse,
+                kaufeLand,
+                fabrikRepository,
+                scanner
+        );
+        consoleAdapter.start(players, startGold, goalGold);
     }
 }

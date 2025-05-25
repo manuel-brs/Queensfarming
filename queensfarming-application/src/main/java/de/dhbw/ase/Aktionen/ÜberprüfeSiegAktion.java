@@ -1,7 +1,7 @@
-package de.dhbw.ase.Aktionen;
+/*package de.dhbw.ase.Aktionen;
 
-import de.dhbw.ase.Spiel;
-import de.dhbw.ase.Spieler;
+import de.dhbw.ase.entities.Spiel;
+import de.dhbw.ase.entities.Spieler;
 
 public class ÜberprüfeSiegAktion extends Aktion {
     private final Spieler spieler;
@@ -16,10 +16,11 @@ public class ÜberprüfeSiegAktion extends Aktion {
     public boolean execute() {
         // Überprüfen, ob der Spieler genug Gold hat
         if (spieler.getAnzahlGold() >= spiel.getZielGold()) {
-            spiel.setMessage("Spieler " + spieler.getName() + " hat gewonnen!!!");
-            spiel.getGameController().notifyObservers();
             return true;
         }
         return false;
     }
 }
+
+
+ */
