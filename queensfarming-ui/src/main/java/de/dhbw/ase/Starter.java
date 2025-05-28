@@ -8,10 +8,7 @@ import de.dhbw.ase.repository.SpielRepositoryImpl;
 import de.dhbw.ase.repository.SpielerManagerRepositoryImpl;
 import de.dhbw.ase.repository.SpielfeldRepositoryImpl;
 import de.dhbw.ase.repository.FabrikRepositoryImpl;
-import de.dhbw.ase.usecases.AgrarModulImpl;
-import de.dhbw.ase.usecases.HandelGemüse;
-import de.dhbw.ase.usecases.HandelGemüseImpl;
-import de.dhbw.ase.usecases.KaufeLandImpl;
+import de.dhbw.ase.usecases.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +97,12 @@ public class Starter {
                 spielerManagerRepository
         );
 
+        FabrikModulImpl fabrikModul = new FabrikModulImpl(
+                fabrikRepository,
+                spielerManagerRepository,
+                spielRepository
+        );
+
         ConsoleAdapter consoleAdapter = new ConsoleAdapter(
                 spielRepository,
                 marktRepository,
@@ -109,6 +112,7 @@ public class Starter {
                 handelGemüse,
                 kaufeLand,
                 fabrikRepository,
+                fabrikModul,
                 scanner
         );
         consoleAdapter.start(players, startGold, goalGold);

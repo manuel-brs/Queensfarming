@@ -5,11 +5,17 @@ import de.dhbw.ase.entities.Spieler;
 import de.dhbw.ase.repositories.FabrikRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FabrikRepositoryImpl implements FabrikRepository {
 
     private final Map<Spieler, Fabrik> fabrikMap = new HashMap<>();
+
+   @Override
+    public List<Fabrik> ladeAlleFabriken() {
+        return List.copyOf(fabrikMap.values());
+    }
 
     @Override
     public void speicherFabrik(Spieler spieler, Fabrik fabrik) {

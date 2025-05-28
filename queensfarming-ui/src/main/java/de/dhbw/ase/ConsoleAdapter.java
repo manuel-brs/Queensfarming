@@ -11,6 +11,8 @@ import de.dhbw.ase.exceptions.MarktNotFoundException;
 import de.dhbw.ase.exceptions.TooManyActions;
 import de.dhbw.ase.repositories.*;
 import de.dhbw.ase.usecases.*;
+import de.dhbw.ase.valueobjects.Produkt;
+import de.dhbw.ase.entities.ProduktMenge;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +28,9 @@ public class ConsoleAdapter {
     private final HandelGemüse handelGemüse;
     private final KaufeLand kaufeLand;
     private final FabrikRepository fabrikRepository;
+    private final FabrikModulImpl fabrikModul;
 
-    public ConsoleAdapter(SpielRepository spielRepository, MarktRepository marktRepository, SpielerManagerRepository spielerManagerRepository, SpielfeldRepository spielfeldRepository, AgrarModul agrarModul, HandelGemüse handelGemüse, KaufeLand kaufeLand, FabrikRepository fabrikRepository, Scanner scanner) {
+    public ConsoleAdapter(SpielRepository spielRepository, MarktRepository marktRepository, SpielerManagerRepository spielerManagerRepository, SpielfeldRepository spielfeldRepository, AgrarModul agrarModul, HandelGemüse handelGemüse, KaufeLand kaufeLand, FabrikRepository fabrikRepository, FabrikModulImpl fabrikModul, Scanner scanner) {
         this.spielRepository = spielRepository;
         this.marktRepository = marktRepository;
         this.spielerManagerRepository = spielerManagerRepository;
@@ -36,6 +39,7 @@ public class ConsoleAdapter {
         this.handelGemüse = handelGemüse;
         this.kaufeLand = kaufeLand;
         this.fabrikRepository = fabrikRepository;
+        this.fabrikModul = fabrikModul;
         this.scanner = scanner;
     }
 
@@ -49,7 +53,7 @@ public class ConsoleAdapter {
                 Spieler spieler1 = new Spieler(i, spieler.get(i), startGold);
                 spielerManagerRepository.speicherSpieler(i, spieler1);
                 spielfeldRepository.speicherSpielfeld(spieler1, new Spielfeld(marktRepository.get().getGemüsearten()));
-                fabrikRepository.ladeFabrik(spieler1);
+                fabrikRepository.speicherFabrik(spieler1, new Fabrik());
             }
         } catch (MarktNotFoundException e) {
             System.out.println("Failed to initialize Game " + e.getMessage());
@@ -79,6 +83,9 @@ public class ConsoleAdapter {
         System.out.println("show fabrik");
         System.out.println("show market");
         System.out.println("show field");
+        System.out.println("upgrade fabrik");
+        System.out.println("produce product");
+        System.out.println("sell all products");
         System.out.println("buy land");
         System.out.println("buy vegetable");
         System.out.println("sell vegetable");
@@ -105,8 +112,22 @@ public class ConsoleAdapter {
             case "show market":
                 zeigeMarkt();
                 break;
+            case "sell all products":
+                if (checkAktionsCounter()) {
+                    verkaufeProdukte();
+                } else {
+                    throw new TooManyActions();
+                }
+                break;
             case "show field":
                 zeigeSpielfeld();
+                break;
+            case "upgrade fabrik":
+                if (checkAktionsCounter()) {
+                    upgradeFabrik();
+                } else {
+                    throw new TooManyActions();
+                }
                 break;
             case "buy land":
                 if (checkAktionsCounter()) {
@@ -118,6 +139,13 @@ public class ConsoleAdapter {
             case "buy vegetable":
                 if (checkAktionsCounter()) {
                     kaufeGemüse();
+                } else {
+                    throw new TooManyActions();
+                }
+                break;
+            case "produce product":
+                if (checkAktionsCounter()) {
+                    produziereProdukt();
                 } else {
                     throw new TooManyActions();
                 }
@@ -152,6 +180,55 @@ public class ConsoleAdapter {
         return true;
     }
 
+    private void verkaufeProdukte() {
+        try {
+            int spielerId = spielRepository.get().getSpielerAmZug();
+            Spieler spieler = spielerManagerRepository.ladeSpieler(spielerId);
+            Fabrik fabrik = fabrikRepository.ladeFabrik(spieler);
+            if (fabrik.getFertigeProdukte().isEmpty()) {
+                System.out.println("Keine fertigen Produkte zum Verkauf.");
+                return;
+            }
+            int goldGewonnen = spieler.getAnzahlGold();
+            fabrikModul.verkaufeProdukte(
+                    fabrikRepository,
+                    spielRepository,
+                    spielerManagerRepository
+            );
+            goldGewonnen = goldGewonnen - spieler.getAnzahlGold();
+            System.out.println("Produkt " + goldGewonnen + " verkauft.");
+            spielRepository.get().setAktionsZähler(spielRepository.get().getAktionsZähler() + 1);
+        } catch (Exception e) {
+            System.out.println("Fehler beim Verkauf der Produkte: " + e.getMessage());
+        }
+    }
+
+    private void produziereProdukt() {
+        try {
+            System.out.println("Produkt auswählen:");
+            System.out.println("1. Brot (2 Getreide)");
+            System.out.println("2. Salat (Salat, Tomate, Karotte)");
+            String produktName = scanner.nextLine();
+            fabrikModul.produziere(produktName, spielfeldRepository, spielRepository, spielerManagerRepository);
+            System.out.println("Produkt " + produktName + " ist in Produktion.");
+            spielRepository.get().setAktionsZähler(spielRepository.get().getAktionsZähler() + 1);
+        } catch (Exception e) {
+            System.out.println("Fehler beim Produzieren des Produkts: " + e.getMessage());
+        }
+    }
+
+    private void upgradeFabrik() {
+        try {
+            int spielerId = spielRepository.get().getSpielerAmZug();
+            Spieler spieler = spielerManagerRepository.ladeSpieler(spielerId);
+            fabrikModul.upgradeFabrik(fabrikRepository, spieler);
+            System.out.println("Fabrik von Spieler " + spieler.getName() + " wurde upgegradet.");
+            spielRepository.get().setAktionsZähler(spielRepository.get().getAktionsZähler() + 1);
+        } catch (Exception e) {
+            System.out.println("Fehler beim Upgraden der Fabrik: " + e.getMessage());
+        }
+    }
+
     private void zeigeFabrik() {
         try {
             int spielerId = spielRepository.get().getSpielerAmZug();
@@ -160,7 +237,15 @@ public class ConsoleAdapter {
             System.out.println("Fabrik von Spieler " + spieler.getName() + ":");
             System.out.println("Anzahl freier Mitarbeiter: "+fabrik.getAnzahlArbeiter());
             System.out.println("Kosten für Update: " + fabrik.getKostenupdate());
-            System.out.println("Produkte in Bearbeitung: "+fabrik.getProdukteinbearbeitung().toString());
+            System.out.println("Produkte in Bearbeitung:");
+            for ( ProduktMenge produktMenge : fabrik.getProdukteinbearbeitung()) {
+                System.out.println(produktMenge.getProdukt().getName() + " - Runden zum wachsen: " + produktMenge.getRundenZumBacken());
+            }
+            System.out.println("Fertige Produkte: ");
+            for ( Produkt produkt : fabrik.getFertigeProdukte()) {
+                System.out.println(produkt.getName());
+            }
+            spielRepository.get().setAktionsZähler(spielRepository.get().getAktionsZähler() + 1);
         } catch (Exception e) {
             System.out.println("Fehler beim Laden der Fabrik: " + e.getMessage());
         }
@@ -191,6 +276,19 @@ public class ConsoleAdapter {
             try {
                 for ( Spielfeld spielfeld : spielfeldRepository.ladeAlleSpielfelder()) {
                     spielfeld.wachsen();
+                }
+                for (Fabrik fabrik : fabrikRepository.ladeAlleFabriken()) {
+                    for ( ProduktMenge produktMenge : fabrik.getProdukteinbearbeitung()) {
+                        if (produktMenge.getRundenZumBacken() > 0) {
+                            int rundenZumBacken = produktMenge.getRundenZumBacken() - 1;
+                            fabrik.getProdukteinbearbeitung().remove(produktMenge);
+                            produktMenge.setRundenZumBacken(rundenZumBacken);
+                            fabrik.getProdukteinbearbeitung().add(produktMenge);
+                        } else {
+                            fabrik.getProdukteinbearbeitung().remove(produktMenge);
+                            fabrik.getFertigeProdukte().add(produktMenge.getProdukt());
+                        }
+                    }
                 }
             } catch (Exception e) {
                 System.out.println("Fehler beim Wachsen des Gemüses: " + e.getMessage());

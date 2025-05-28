@@ -1,6 +1,5 @@
 package de.dhbw.ase.entities;
 
-import de.dhbw.ase.entities.Kachel.Scheune;
 import de.dhbw.ase.valueobjects.Produkt;
 
 import java.util.*;
@@ -8,12 +7,19 @@ import java.util.*;
 public class Fabrik {
     private int anzahlArbeiter;
     private int kostenupdate;
-    private Map<Produkt, Integer> produkteinbearbeitung = new HashMap<>();
+    private List<ProduktMenge> produkteinbearbeitung = new ArrayList<>();
+    private List<Produkt> fertigeProdukte = new ArrayList<>();
     private Queue<Produkt> lager = new LinkedList<>();
+
+    private final Map<String, Map<String, Integer>> REZEPTUREN = new HashMap<>();
 
     public Fabrik() {
         this.anzahlArbeiter = 1;
         this.kostenupdate = 2;
+
+        // Definiere die benötigten Zutaten für jedes Produkt
+        REZEPTUREN.put("Brot", Map.of("GETREIDE", 2));
+        REZEPTUREN.put("Salat", Map.of("SALAT", 1, "TOMATE", 1, "KAROTTE", 1));
     }
 
     public int getAnzahlArbeiter() {
@@ -32,11 +38,11 @@ public class Fabrik {
         this.kostenupdate = kostenupdate;
     }
 
-    public Map<Produkt, Integer> getProdukteinbearbeitung() {
+    public List<ProduktMenge> getProdukteinbearbeitung() {
         return produkteinbearbeitung;
     }
 
-    public void setProdukteinbearbeitung(Map<Produkt, Integer> produkteinbearbeitung) {
+    public void setProdukteinbearbeitung(List<ProduktMenge> produkteinbearbeitung) {
         this.produkteinbearbeitung = produkteinbearbeitung;
     }
 
@@ -46,5 +52,17 @@ public class Fabrik {
 
     public void setLager(Queue<Produkt> lager) {
         this.lager = lager;
+    }
+
+    public Map<String, Map<String, Integer>> getREZEPTUREN() {
+        return REZEPTUREN;
+    }
+
+    public List<Produkt> getFertigeProdukte() {
+        return fertigeProdukte;
+    }
+
+    public void setFertigeProdukte(List<Produkt> fertigeProdukte) {
+        this.fertigeProdukte = fertigeProdukte;
     }
 }
