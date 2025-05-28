@@ -1,21 +1,21 @@
 package de.dhbw.ase.entities.Kachel;
 
-import de.dhbw.ase.entities.Gemüse.GemüseTyp;
+import de.dhbw.ase.entities.Gemuese.GemueseTyp;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Scheune extends Kachel {
-    private Map<GemüseTyp, Integer> inventar = new HashMap<>();
+    private Map<GemueseTyp, Integer> inventar = new HashMap<>();
 
-    public Scheune(GemüseTyp[] gemüsetypen) {
+    public Scheune(GemueseTyp[] gemüsetypen) {
         super(gemüsetypen, "Scheune");
-        for (GemüseTyp gemüsetyp:gemüsetypen) {
+        for (GemueseTyp gemüsetyp:gemüsetypen) {
             inventar.put(gemüsetyp, 0);
         }
     }
 
-    public Map<GemüseTyp, Integer> getInventar() {
+    public Map<GemueseTyp, Integer> getInventar() {
         return inventar;
     }
 }

@@ -1,6 +1,6 @@
 package de.dhbw.ase.usecases;
 
-import de.dhbw.ase.entities.Gemüse.GemüseTyp;
+import de.dhbw.ase.entities.Gemuese.GemueseTyp;
 import de.dhbw.ase.entities.Kachel.BebaubareKachel;
 import de.dhbw.ase.entities.Kachel.Kachel;
 import de.dhbw.ase.entities.Kachel.Scheune;
@@ -8,8 +8,6 @@ import de.dhbw.ase.entities.Markt;
 import de.dhbw.ase.entities.Spiel;
 import de.dhbw.ase.entities.Spieler;
 import de.dhbw.ase.entities.Spielfeld;
-import de.dhbw.ase.exceptions.GameNotFoundException;
-import de.dhbw.ase.exceptions.MarktNotFoundException;
 import de.dhbw.ase.repositories.MarktRepository;
 import de.dhbw.ase.repositories.SpielRepository;
 import de.dhbw.ase.repositories.SpielerManagerRepository;
@@ -31,7 +29,7 @@ public class AgrarModulImpl implements AgrarModul {
     }
 
     @Override
-    public void anbauenGemüse(int posY, int posX, GemüseTyp gemüse) throws Exception {
+    public void anbauenGemüse(int posY, int posX, GemueseTyp gemüse) throws Exception {
         Spiel spiel = spielRepository.get();
         Spieler spieler = spielerManagerRepository.ladeSpieler(spiel.getSpielerAmZug());
         Spielfeld spielfeld = spielfeldRepository.ladeSpielfeld(spieler);

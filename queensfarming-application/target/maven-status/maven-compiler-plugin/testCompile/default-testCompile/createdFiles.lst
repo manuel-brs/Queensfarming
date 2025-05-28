@@ -1,0 +1,4 @@
+repository/SpielRepositoryImplTest.class
+usecases/FabrikModulImplTest.class
+usecases/AgrarModulImplTest.class
+repository/SpielerManagerRepositoryImplTest.class

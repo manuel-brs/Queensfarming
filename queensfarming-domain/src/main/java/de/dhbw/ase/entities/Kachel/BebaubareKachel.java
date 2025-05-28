@@ -1,23 +1,23 @@
 package de.dhbw.ase.entities.Kachel;
 
-import de.dhbw.ase.entities.Gemüse.GemüseTyp;
+import de.dhbw.ase.entities.Gemuese.GemueseTyp;
 import de.dhbw.ase.valueobjects.ErntePreis;
 
 abstract public class BebaubareKachel extends Kachel {
-    private GemüseTyp angebaut;
+    private GemueseTyp angebaut;
     private String symbol;
     private int wachstumsstatus = 0;
     private int kapazität;
 
-    public BebaubareKachel(int kapazität, GemüseTyp[] anbaubaresgemüse, String name, String symbol) {
+    public BebaubareKachel(int kapazität, GemueseTyp[] anbaubaresgemüse, String name, String symbol) {
         super(anbaubaresgemüse, name);
         this.kapazität = kapazität;
         this.symbol = symbol;
     }
 
-    public boolean baueGemüseAn(GemüseTyp gemüse) {
-        for (GemüseTyp gemüseTyp : this.anbaubaresgemüse) {
-            if (gemüseTyp.getGemüsename().equals(gemüseTyp.getGemüsename())) {
+    public boolean baueGemüseAn(GemueseTyp gemüse) {
+        for (GemueseTyp gemueseTyp : this.anbaubaresgemüse) {
+            if (gemueseTyp.getGemüsename().equals(gemueseTyp.getGemüsename())) {
                 if (this.angebaut == null) {
                     this.angebaut = gemüse;
                     this.wachstumsstatus ++;
@@ -38,7 +38,7 @@ abstract public class BebaubareKachel extends Kachel {
     }
 
     public ErntePreis ernteKachel() {
-        GemüseTyp gemüse = this.angebaut;
+        GemueseTyp gemüse = this.angebaut;
         this.angebaut = null;
         return new ErntePreis(gemüse, this.wachstumsstatus);
     }
@@ -55,11 +55,11 @@ abstract public class BebaubareKachel extends Kachel {
         this.wachstumsstatus = 0;
     }
 
-    public GemüseTyp getAngebaut() {
+    public GemueseTyp getAngebaut() {
         return angebaut;
     }
 
-    public void setAngebaut(GemüseTyp angebaut) {
+    public void setAngebaut(GemueseTyp angebaut) {
         this.angebaut = angebaut;
     }
 

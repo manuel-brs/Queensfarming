@@ -1,7 +1,7 @@
 package de.dhbw.ase;
 
 import de.dhbw.ase.entities.*;
-import de.dhbw.ase.entities.Gemüse.GemüseTyp;
+import de.dhbw.ase.entities.Gemuese.GemueseTyp;
 import de.dhbw.ase.entities.Kachel.BebaubareKachel;
 import de.dhbw.ase.entities.Kachel.Kachel;
 import de.dhbw.ase.entities.Kachel.Scheune;
@@ -306,11 +306,11 @@ public class ConsoleAdapter {
             int x = Integer.parseInt(scanner.nextLine());
             System.out.println("Koordinate y:");
             int y = Integer.parseInt(scanner.nextLine());
-            GemüseTyp gemüseTyp = Arrays.stream(marktRepository.get().getGemüsearten())
+            GemueseTyp gemueseTyp = Arrays.stream(marktRepository.get().getGemüsearten())
                     .filter(gemüse -> gemüse.getGemüsename().equalsIgnoreCase(gemüseName))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Gemüse nicht gefunden"));
-            agrarModul.anbauenGemüse(x,y, gemüseTyp);
+            agrarModul.anbauenGemüse(x,y, gemueseTyp);
             System.out.println("Gemüse gepflanzt.");
             spielRepository.get().setAktionsZähler(spielRepository.get().getAktionsZähler() + 1);
         } catch (Exception e) {
@@ -335,15 +335,15 @@ public class ConsoleAdapter {
     private void verkaufeGemüse() {
         try {
             System.out.println("Gemüse Typ auswählen:");
-            for (GemüseTyp gemüseTyp : marktRepository.get().getGemüsearten()) {
-                System.out.println(gemüseTyp.getGemüsename() + " - Preis: " + gemüseTyp.getPreis());
+            for (GemueseTyp gemueseTyp : marktRepository.get().getGemüsearten()) {
+                System.out.println(gemueseTyp.getGemüsename() + " - Preis: " + gemueseTyp.getPreis());
             }
             String gemüseName = scanner.nextLine();
-            GemüseTyp gemüseTyp = Arrays.stream(marktRepository.get().getGemüsearten())
+            GemueseTyp gemueseTyp = Arrays.stream(marktRepository.get().getGemüsearten())
                     .filter(gemüse -> gemüse.getGemüsename().equalsIgnoreCase(gemüseName))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Gemüse nicht gefunden"));
-            handelGemüse.verkaufeGemüse(gemüseTyp);
+            handelGemüse.verkaufeGemüse(gemueseTyp);
             System.out.println("Gemüse verkauft.");
             spielRepository.get().setAktionsZähler(spielRepository.get().getAktionsZähler() + 1);
         } catch (Exception e) {
@@ -354,15 +354,15 @@ public class ConsoleAdapter {
     private void kaufeGemüse() {
         try {
             System.out.println("Gemüse Typ auswählen:");
-            for (GemüseTyp gemüseTyp : marktRepository.get().getGemüsearten()) {
-                System.out.println(gemüseTyp.getGemüsename() + " - Preis: " + gemüseTyp.getPreis());
+            for (GemueseTyp gemueseTyp : marktRepository.get().getGemüsearten()) {
+                System.out.println(gemueseTyp.getGemüsename() + " - Preis: " + gemueseTyp.getPreis());
             }
             String gemüseName = scanner.nextLine();
-            GemüseTyp gemüseTyp = Arrays.stream(marktRepository.get().getGemüsearten())
+            GemueseTyp gemueseTyp = Arrays.stream(marktRepository.get().getGemüsearten())
                     .filter(gemüse -> gemüse.getGemüsename().equalsIgnoreCase(gemüseName))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Gemüse nicht gefunden"));
-            handelGemüse.kaufeGemüse(gemüseTyp);
+            handelGemüse.kaufeGemüse(gemueseTyp);
             System.out.println("Gemüse gekauft.");
             spielRepository.get().setAktionsZähler(spielRepository.get().getAktionsZähler() + 1);
         } catch (Exception e) {
@@ -472,8 +472,8 @@ public class ConsoleAdapter {
 
     private void zeigeMarkt() throws MarktNotFoundException, GameNotFoundException {
         System.out.println("Market:");
-        for ( GemüseTyp gemüseTyp : marktRepository.get().getGemüsearten()) {
-            System.out.println(gemüseTyp.getGemüsename() + " - Preis: " + gemüseTyp.getPreis());
+        for ( GemueseTyp gemueseTyp : marktRepository.get().getGemüsearten()) {
+            System.out.println(gemueseTyp.getGemüsename() + " - Preis: " + gemueseTyp.getPreis());
         }
         System.out.println(marktRepository.get().toString());
     }
@@ -487,7 +487,7 @@ public class ConsoleAdapter {
 
         System.out.println("Scheune von Spieler " + spieler.getName() + ":");
         System.out.println("Gemüse: ");
-        for (GemüseTyp gemüse : markt.getGemüsearten()) {
+        for (GemueseTyp gemüse : markt.getGemüsearten()) {
             System.out.println(gemüse.getGemüsename() + ": " + scheune.getInventar().get(gemüse) + " Stück");
         }
         System.out.println("Gold: " + spieler.getAnzahlGold() + " Gold");

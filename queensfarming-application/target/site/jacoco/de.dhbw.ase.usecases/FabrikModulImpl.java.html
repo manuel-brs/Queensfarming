@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FabrikModulImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">queensfarming-application</a> &gt; <a href="index.source.html" class="el_package">de.dhbw.ase.usecases</a> &gt; <span class="el_source">FabrikModulImpl.java</span></div><h1>FabrikModulImpl.java</h1><pre class="source lang-java linenums">package de.dhbw.ase.usecases;
+
+import de.dhbw.ase.entities.Fabrik;
+import de.dhbw.ase.entities.Kachel.Scheune;
+import de.dhbw.ase.entities.Spiel;
+import de.dhbw.ase.entities.Spieler;
+import de.dhbw.ase.exceptions.GameNotFoundException;
+import de.dhbw.ase.repositories.FabrikRepository;
+import de.dhbw.ase.repositories.SpielRepository;
+import de.dhbw.ase.repositories.SpielerManagerRepository;
+import de.dhbw.ase.repositories.SpielfeldRepository;
+import de.dhbw.ase.valueobjects.Produkt;
+import de.dhbw.ase.entities.ProduktMenge;
+
+import java.util.Map;
+
+public class FabrikModulImpl implements FabrikModul {
+    private final FabrikRepository fabrikRepository;
+    private final SpielerManagerRepository spielerManagerRepository;
+    private final SpielRepository spielRepository;
+
+<span class="fc" id="L22">    public FabrikModulImpl(FabrikRepository fabrikRepository, SpielerManagerRepository spielerManagerRepository, SpielRepository spielRepository) {</span>
+<span class="fc" id="L23">        this.fabrikRepository = fabrikRepository;</span>
+<span class="fc" id="L24">        this.spielerManagerRepository = spielerManagerRepository;</span>
+<span class="fc" id="L25">        this.spielRepository = spielRepository;</span>
+<span class="fc" id="L26">    }</span>
+
+    @Override
+    public void upgradeFabrik(FabrikRepository fabrikRepository, Spieler spieler) {
+        try {
+<span class="fc" id="L31">            Fabrik fabrik = fabrikRepository.ladeFabrik(spieler);</span>
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">            if (fabrik.getKostenupdate() &lt;= spieler.getAnzahlGold()) {</span>
+<span class="fc" id="L33">                fabrik.setKostenupdate(</span>
+<span class="fc" id="L34">                        fabrik.getKostenupdate() + 2</span>
+                );
+<span class="fc" id="L36">                fabrik.setAnzahlArbeiter(</span>
+<span class="fc" id="L37">                        fabrik.getAnzahlArbeiter() + 1</span>
+                );
+            } else {
+<span class="nc" id="L40">                throw new Exception(&quot;Nicht genug Gold zum Upgraden der Fabrik.&quot;);</span>
+            }
+<span class="nc" id="L42">        } catch (Exception e) {</span>
+<span class="nc" id="L43">            System.out.println(e.getMessage());</span>
+<span class="fc" id="L44">        }</span>
+<span class="fc" id="L45">    }</span>
+
+
+    @Override
+    public void produziere(String produkt, SpielfeldRepository spielfeldRepository, SpielRepository spielRepository, SpielerManagerRepository spielerManagerRepository) {
+        try {
+<span class="fc" id="L51">            Spiel spiel = spielRepository.get();</span>
+<span class="fc" id="L52">            Spieler spieler = spielerManagerRepository.ladeSpieler(spiel.getSpielerAmZug());</span>
+<span class="fc" id="L53">            Fabrik fabrik = fabrikRepository.ladeFabrik(spieler);</span>
+<span class="fc" id="L54">            Scheune scheune = spielfeldRepository.ladeSpielfeld(spieler).getScheune();</span>
+<span class="fc" id="L55">            Map&lt;String, Integer&gt; rezept = fabrik.getREZEPTUREN().get(produkt);</span>
+
+<span class="fc" id="L57">            boolean genügendZutaten = rezept.entrySet().stream().anyMatch(entry -&gt;</span>
+<span class="fc" id="L58">                    scheune.getInventar().entrySet().stream().anyMatch(k -&gt; {</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">                        if (k.getKey().getGemüsename().equals(entry.getKey())) {</span>
+<span class="fc" id="L60">                            System.out.println(&quot;Vorhanden: &quot; + k.getValue() + &quot; benötigt: &quot; + entry.getValue());</span>
+                        }
+<span class="pc bpc" id="L62" title="2 of 4 branches missed.">                        return k.getKey().getGemüsename().equals(entry.getKey()) &amp;&amp; k.getValue() &gt;= entry.getValue();</span>
+                    })
+            );
+<span class="pc bpc" id="L65" title="2 of 4 branches missed.">            if (fabrik.getAnzahlArbeiter() &gt; 0 &amp;&amp; genügendZutaten) {</span>
+<span class="fc" id="L66">                fabrik.setAnzahlArbeiter(</span>
+<span class="fc" id="L67">                        fabrik.getAnzahlArbeiter() -1</span>
+                );
+<span class="fc" id="L69">                rezept.forEach((zutat, menge) -&gt; {</span>
+<span class="fc" id="L70">                    scheune.getInventar().entrySet().stream()</span>
+<span class="fc" id="L71">                            .filter(entry -&gt; entry.getKey().getGemüsename().equals(zutat))</span>
+<span class="fc" id="L72">                            .findFirst()</span>
+<span class="fc" id="L73">                            .ifPresent(entry -&gt; {</span>
+<span class="fc" id="L74">                                int alterWert = entry.getValue();</span>
+<span class="fc" id="L75">                                int neueMenge = alterWert - menge;</span>
+
+<span class="fc" id="L77">                                scheune.getInventar().put(entry.getKey(), neueMenge);</span>
+<span class="fc" id="L78">                            });</span>
+<span class="fc" id="L79">                });</span>
+<span class="fc" id="L80">                fabrik.getProdukteinbearbeitung().add(new ProduktMenge(new Produkt(produkt, 10, 3),3));</span>
+<span class="fc" id="L81">                System.out.println(&quot;Produktion erfolgreich.&quot;);</span>
+            } else {
+<span class="nc" id="L83">                throw new Exception(&quot;Nicht genug Arbeiter oder Zutaten für die Produktion.&quot;);</span>
+            }
+<span class="nc" id="L85">        } catch (Exception e) {</span>
+<span class="nc" id="L86">            System.out.println(e.getMessage());</span>
+<span class="fc" id="L87">        }</span>
+<span class="fc" id="L88">    }</span>
+
+    @Override
+    public void verkaufeProdukte(FabrikRepository fabrikRepository, SpielRepository spielRepository, SpielerManagerRepository spielerManagerRepository) throws GameNotFoundException {
+<span class="fc" id="L92">        Spiel spiel = spielRepository.get();</span>
+<span class="fc" id="L93">        Spieler spieler = spielerManagerRepository.ladeSpieler(spiel.getSpielerAmZug());</span>
+<span class="fc" id="L94">        Fabrik fabrik = fabrikRepository.ladeFabrik(spieler);</span>
+
+<span class="fc" id="L96">        int goldGewinn = 0;</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        for ( Produkt produkt : fabrik.getFertigeProdukte()){</span>
+<span class="fc" id="L98">            goldGewinn += produkt.getPreis();</span>
+<span class="fc" id="L99">        }</span>
+<span class="fc" id="L100">        fabrik.getFertigeProdukte().clear();</span>
+<span class="fc" id="L101">        spieler.setAnzahlGold(</span>
+<span class="fc" id="L102">                spieler.getAnzahlGold() + goldGewinn</span>
+        );
+<span class="fc" id="L104">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

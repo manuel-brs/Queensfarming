@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Spieler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">queensfarming-domain</a> &gt; <a href="index.source.html" class="el_package">de.dhbw.ase.entities</a> &gt; <span class="el_source">Spieler.java</span></div><h1>Spieler.java</h1><pre class="source lang-java linenums">package de.dhbw.ase.entities;
+
+public class Spieler {
+<span class="nc" id="L4">    int spielernummer = 0;</span>
+    String name;
+    private Spielfeld spielfeld;
+    int anzahlGold;
+<span class="nc" id="L8">    private Fabrik fabrik = new Fabrik();</span>
+<span class="nc" id="L9">    public Spieler(int spielernummer, String name, int startGold) {</span>
+<span class="nc" id="L10">        this.spielernummer = spielernummer;</span>
+<span class="nc" id="L11">        this.name = name;</span>
+<span class="nc" id="L12">        this.anzahlGold = startGold;</span>
+<span class="nc" id="L13">    }</span>
+
+    public int getSpielernummer() {
+<span class="nc" id="L16">        return spielernummer;</span>
+    }
+
+    public void setSpielernummer(int spielernummer) {
+<span class="nc" id="L20">        this.spielernummer = spielernummer;</span>
+<span class="nc" id="L21">    }</span>
+
+    public void setName(String name) {
+<span class="nc" id="L24">        this.name = name;</span>
+<span class="nc" id="L25">    }</span>
+
+    public Spielfeld getSpielfeld() {
+<span class="nc" id="L28">        return spielfeld;</span>
+    }
+
+    public void setSpielfeld(Spielfeld spielfeld) {
+<span class="nc" id="L32">        this.spielfeld = spielfeld;</span>
+<span class="nc" id="L33">    }</span>
+
+    public void setAnzahlGold(int anzahlGold) {
+<span class="nc" id="L36">        this.anzahlGold = anzahlGold;</span>
+<span class="nc" id="L37">    }</span>
+
+    public Fabrik getFabrik() {
+<span class="nc" id="L40">        return fabrik;</span>
+    }
+
+    public void setFabrik(Fabrik fabrik) {
+<span class="nc" id="L44">        this.fabrik = fabrik;</span>
+<span class="nc" id="L45">    }</span>
+
+    public int getAnzahlGold() {
+<span class="nc" id="L48">        return anzahlGold;</span>
+    }
+
+    public String getName() {
+<span class="nc" id="L52">        return name;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,9 +1,9 @@
 package de.dhbw.ase.usecases;
 
-import de.dhbw.ase.entities.Gemüse.GemüseTyp;
+import de.dhbw.ase.entities.Gemuese.GemueseTyp;
 
 public interface HandelGemüse {
-    void kaufeGemüse(GemüseTyp gemüseTyp) throws Exception;
+    void kaufeGemüse(GemueseTyp gemueseTyp) throws Exception;
 
-    void verkaufeGemüse(GemüseTyp gemüseTyp) throws Exception;
+    void verkaufeGemüse(GemueseTyp gemueseTyp) throws Exception;
 }

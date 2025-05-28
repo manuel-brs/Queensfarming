@@ -1,6 +1,6 @@
 package de.dhbw.ase.usecases;
 
-import de.dhbw.ase.entities.Gemüse.GemüseTyp;
+import de.dhbw.ase.entities.Gemuese.GemueseTyp;
 import de.dhbw.ase.entities.Kachel.Scheune;
 import de.dhbw.ase.entities.Markt;
 import de.dhbw.ase.entities.Spiel;
@@ -28,40 +28,40 @@ public class HandelGemüseImpl implements HandelGemüse {
 
 
     @Override
-    public void kaufeGemüse(GemüseTyp gemüseTyp) throws Exception {
+    public void kaufeGemüse(GemueseTyp gemueseTyp) throws Exception {
         Spiel spiel = spielRepository.get();
         Spieler spieler = spielerManagerRepository.ladeSpieler(spiel.getSpielerAmZug());
         Spielfeld spielfeld = spielfeldRepository.ladeSpielfeld(spieler);
         Markt markt = marktRepository.get();
         Scheune scheune = spielfeld.getScheune();
 
-        KaufErgebnis kaufErgebnis = markt.kaufeGemüse(gemüseTyp);
+        KaufErgebnis kaufErgebnis = markt.kaufeGemüse(gemueseTyp);
 
         if (spieler.getAnzahlGold() < kaufErgebnis.getPreis()) {
-            markt.verkaufeGemüse(gemüseTyp);
+            markt.verkaufeGemüse(gemueseTyp);
         }
 
         spieler.setAnzahlGold(spieler.getAnzahlGold() - kaufErgebnis.getPreis());
-        scheune.getInventar().put(gemüseTyp, scheune.getInventar().getOrDefault(gemüseTyp, 0) + 1);
+        scheune.getInventar().put(gemueseTyp, scheune.getInventar().getOrDefault(gemueseTyp, 0) + 1);
     }
 
     @Override
-    public void verkaufeGemüse(GemüseTyp gemüseTyp) throws Exception {
+    public void verkaufeGemüse(GemueseTyp gemueseTyp) throws Exception {
         Spiel spiel = spielRepository.get();
         Spieler spieler = spielerManagerRepository.ladeSpieler(spiel.getSpielerAmZug());
         Spielfeld spielfeld = spielfeldRepository.ladeSpielfeld(spieler);
         Markt markt = marktRepository.get();
         Scheune scheune = spielfeld.getScheune();
 
-        int anzahl = scheune.getInventar().getOrDefault(gemüseTyp, 0);
+        int anzahl = scheune.getInventar().getOrDefault(gemueseTyp, 0);
 
         if (anzahl < 1) {
             throw new Exception("Nicht genug Gemüse vorhanden.");
         }
 
-        KaufErgebnis kaufErgebnis = markt.verkaufeGemüse(gemüseTyp);
+        KaufErgebnis kaufErgebnis = markt.verkaufeGemüse(gemueseTyp);
 
-        scheune.getInventar().put(gemüseTyp, anzahl - 1);
+        scheune.getInventar().put(gemueseTyp, anzahl - 1);
         spieler.setAnzahlGold(spieler.getAnzahlGold() + kaufErgebnis.getPreis());
     }
 }

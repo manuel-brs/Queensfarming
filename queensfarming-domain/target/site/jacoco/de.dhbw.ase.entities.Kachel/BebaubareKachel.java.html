@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BebaubareKachel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">queensfarming-domain</a> &gt; <a href="index.source.html" class="el_package">de.dhbw.ase.entities.Kachel</a> &gt; <span class="el_source">BebaubareKachel.java</span></div><h1>BebaubareKachel.java</h1><pre class="source lang-java linenums">package de.dhbw.ase.entities.Kachel;
+
+import de.dhbw.ase.entities.Gemuese.GemueseTyp;
+import de.dhbw.ase.valueobjects.ErntePreis;
+
+abstract public class BebaubareKachel extends Kachel {
+    private GemueseTyp angebaut;
+    private String symbol;
+<span class="nc" id="L9">    private int wachstumsstatus = 0;</span>
+    private int kapazität;
+
+    public BebaubareKachel(int kapazität, GemueseTyp[] anbaubaresgemüse, String name, String symbol) {
+<span class="nc" id="L13">        super(anbaubaresgemüse, name);</span>
+<span class="nc" id="L14">        this.kapazität = kapazität;</span>
+<span class="nc" id="L15">        this.symbol = symbol;</span>
+<span class="nc" id="L16">    }</span>
+
+    public boolean baueGemüseAn(GemueseTyp gemüse) {
+<span class="nc bnc" id="L19" title="All 2 branches missed.">        for (GemueseTyp gemueseTyp : this.anbaubaresgemüse) {</span>
+<span class="nc bnc" id="L20" title="All 2 branches missed.">            if (gemueseTyp.getGemüsename().equals(gemueseTyp.getGemüsename())) {</span>
+<span class="nc bnc" id="L21" title="All 2 branches missed.">                if (this.angebaut == null) {</span>
+<span class="nc" id="L22">                    this.angebaut = gemüse;</span>
+<span class="nc" id="L23">                    this.wachstumsstatus ++;</span>
+<span class="nc" id="L24">                    return true;</span>
+                }
+            }
+        }
+<span class="nc" id="L28">        return false;</span>
+    }
+
+    public void wachsen() {
+<span class="nc bnc" id="L32" title="All 4 branches missed.">        if (angebaut != null &amp;&amp; this.wachstumsstatus &lt; this.kapazität) {</span>
+<span class="nc" id="L33">            this.wachstumsstatus = this.wachstumsstatus * 2;</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">            if (this.wachstumsstatus &gt; this.kapazität) {</span>
+<span class="nc" id="L35">                this.wachstumsstatus = this.kapazität;</span>
+            }
+        }
+<span class="nc" id="L38">    }</span>
+
+    public ErntePreis ernteKachel() {
+<span class="nc" id="L41">        GemueseTyp gemüse = this.angebaut;</span>
+<span class="nc" id="L42">        this.angebaut = null;</span>
+<span class="nc" id="L43">        return new ErntePreis(gemüse, this.wachstumsstatus);</span>
+    }
+
+    public String getSymbol() {
+<span class="nc" id="L47">        return symbol;</span>
+    }
+
+    public void setSymbol(String symbol) {
+<span class="nc" id="L51">        this.symbol = symbol;</span>
+<span class="nc" id="L52">    }</span>
+
+    public void resetWachstumsstatus() {
+<span class="nc" id="L55">        this.wachstumsstatus = 0;</span>
+<span class="nc" id="L56">    }</span>
+
+    public GemueseTyp getAngebaut() {
+<span class="nc" id="L59">        return angebaut;</span>
+    }
+
+    public void setAngebaut(GemueseTyp angebaut) {
+<span class="nc" id="L63">        this.angebaut = angebaut;</span>
+<span class="nc" id="L64">    }</span>
+
+    public int getWachstumsstatus() {
+<span class="nc" id="L67">        return wachstumsstatus;</span>
+    }
+
+    public void setWachstumsstatus(int wachstumsstatus) {
+<span class="nc" id="L71">        this.wachstumsstatus = wachstumsstatus;</span>
+<span class="nc" id="L72">    }</span>
+
+    public int getKapazität() {
+<span class="nc" id="L75">        return kapazität;</span>
+    }
+
+    public void setKapazität(int kapazität) {
+<span class="nc" id="L79">        this.kapazität = kapazität;</span>
+<span class="nc" id="L80">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

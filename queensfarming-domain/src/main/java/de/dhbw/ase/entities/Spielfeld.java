@@ -1,15 +1,15 @@
 package de.dhbw.ase.entities;
 
-import de.dhbw.ase.entities.Gemüse.GemüseTyp;
+import de.dhbw.ase.entities.Gemuese.GemueseTyp;
 import de.dhbw.ase.entities.Kachel.BebaubareKachel;
 import de.dhbw.ase.entities.Kachel.Kachel;
 import de.dhbw.ase.entities.Kachel.Scheune;
 
 public class Spielfeld {
     private Kachel[][] spielfeld;
-    public Spielfeld(GemüseTyp[] gemüseTyps) {
+    public Spielfeld(GemueseTyp[] gemueseTyps) {
         this.spielfeld = new Kachel[5][5];
-        this.spielfeld[4][2] = new Scheune(gemüseTyps);
+        this.spielfeld[4][2] = new Scheune(gemueseTyps);
     }
 
     public int berechneScheunenDistanz(int x, int y) {

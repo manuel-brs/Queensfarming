@@ -1,4 +1,9 @@
-de/dhbw/ase/SpielController.class
-de/dhbw/ase/ISubjekt.class
-de/dhbw/ase/IObserver.class
-de/dhbw/ase/Spiel.class
+de/dhbw/ase/usecases/FabrikModulImpl.class
+de/dhbw/ase/repository/MarktRepositoryImpl.class
+de/dhbw/ase/repository/FabrikRepositoryImpl.class
+de/dhbw/ase/repository/SpielfeldRepositoryImpl.class
+de/dhbw/ase/repository/SpielerManagerRepositoryImpl.class
+de/dhbw/ase/usecases/KaufeLandImpl.class
+de/dhbw/ase/repository/SpielRepositoryImpl.class
+de/dhbw/ase/usecases/HandelGemüseImpl.class
+de/dhbw/ase/usecases/AgrarModulImpl.class

@@ -1,2 +1,3 @@
-de/dhbw/ase/GUI.class
+de/dhbw/ase/ConsoleAdapter.class
+de/dhbw/ase/exceptions/TooManyActions.class
 de/dhbw/ase/Starter.class

@@ -1,9 +1,9 @@
 package de.dhbw.ase.entities.Kachel;
 
-import de.dhbw.ase.entities.Gemüse.GemüseTyp;
+import de.dhbw.ase.entities.Gemuese.GemueseTyp;
 
 public class Wald extends BebaubareKachel {
-    public Wald(GemüseTyp[] gemüsetypen) {
+    public Wald(GemueseTyp[] gemüsetypen) {
         super(4, gemüsetypen, "Wald", "W");
     }
 }

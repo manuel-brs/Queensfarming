@@ -1,20 +1,25 @@
 package de.dhbw.ase.valueobjects;
 
-import de.dhbw.ase.entities.Gemüse.Gemüse;
-
+import de.dhbw.ase.entities.Gemuese.Gemuese;
 import java.util.Objects;
 
 public class KaufErgebnis {
-    final private Gemüse gemüse;
-    final private int preis;
+    private final Gemuese gemuese;
+    private final int preis;
 
-    public KaufErgebnis(Gemüse gemüse, int preis) {
-        this.gemüse = gemüse;
+    public KaufErgebnis(Gemuese gemuese, int preis) {
+        if (gemuese == null) {
+            throw new IllegalArgumentException("Gemüse darf nicht null sein.");
+        }
+        if (preis < 0) {
+            throw new IllegalArgumentException("Preis darf nicht negativ sein.");
+        }
+        this.gemuese = gemuese;
         this.preis = preis;
     }
 
-    public Gemüse getGemüse() {
-        return gemüse;
+    public Gemuese getGemüse() {
+        return gemuese;
     }
 
     public int getPreis() {
@@ -26,11 +31,16 @@ public class KaufErgebnis {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         KaufErgebnis that = (KaufErgebnis) o;
-        return preis == that.preis && Objects.equals(gemüse, that.gemüse);
+        return preis == that.preis && Objects.equals(gemuese, that.gemuese);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gemüse, preis);
+        return Objects.hash(gemuese, preis);
+    }
+
+    @Override
+    public String toString() {
+        return "KaufErgebnis{" + "gemüse=" + gemuese + ", preis=" + preis + '}';
     }
 }

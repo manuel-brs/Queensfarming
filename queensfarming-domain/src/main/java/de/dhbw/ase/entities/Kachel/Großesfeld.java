@@ -1,9 +1,9 @@
 package de.dhbw.ase.entities.Kachel;
 
-import de.dhbw.ase.entities.Gemüse.GemüseTyp;
+import de.dhbw.ase.entities.Gemuese.GemueseTyp;
 
 public class Großesfeld extends BebaubareKachel{
-    public Großesfeld(GemüseTyp[] gemüsetypen) {
+    public Großesfeld(GemueseTyp[] gemüsetypen) {
         super(8, gemüsetypen, "Großesfeld", "GF");
 
     }
