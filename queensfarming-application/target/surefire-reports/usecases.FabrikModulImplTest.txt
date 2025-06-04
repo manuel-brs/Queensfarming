@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: usecases.FabrikModulImplTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.430 s -- in usecases.FabrikModulImplTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.417 s -- in usecases.FabrikModulImplTest
