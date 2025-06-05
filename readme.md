@@ -1060,7 +1060,7 @@ class SpielfeldRepositoryImpl {
 ```
 
 
-### 7.2.3 Extract Method (aus der Vorlesung)
+### 7.2.3 Extract Method (aus der Vorlesung) COMMITID: `5e035c149a0270e51422d5e23d95b6c5505e995b`
 Die Funktion baueGemüseAn ist zu lang und sollte Logik auslagern.
 
 **vorher:**
@@ -1100,7 +1100,7 @@ private boolean checkObGemueseAnbaubar(GemueseTyp angebautGemüse, GemueseTyp ge
 ```
 
 
-### 7.2.4 Rename Method (aus der Vorlesung)
+### 7.2.4 Rename Method (aus der Vorlesung) COMMITID: `5e035c149a0270e51422d5e23d95b6c5505e995b`
 Die Funktion  muss umbenannt werden, da der Name verwirrend ist. Es wird ebenfalls geprüft, ob es erlaubt ist ein Gemüse auf das Feld anzubauen.
 
 **vorher:**
