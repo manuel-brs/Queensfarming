@@ -1059,6 +1059,70 @@ class SpielfeldRepositoryImpl {
 }
 ```
 
+
+### 7.2.3 Extract Method (aus der Vorlesung)
+Die Funktion baueGemüseAn ist zu lang und sollte Logik auslagern.
+
+**vorher:**
+```java
+public boolean baueGemüseAn(GemueseTyp gemüse) {
+        for (GemueseTyp gemueseTyp : this.anbaubaresgemüse) {
+            if (gemueseTyp.getGemüsename().equals(gemueseTyp.getGemüsename())) {
+                if (this.angebaut == null) {
+                    this.angebaut = gemüse;
+                    this.wachstumsstatus ++;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+```
+
+**nachher:**
+```java
+public boolean baueGemüseAn(GemueseTyp gemüse) {
+    for (GemueseTyp gemueseTyp : this.anbaubaresgemüse) {
+        return checkObGemueseAnbaubar(gemueseTyp, gemüse);
+    }
+    return false;
+}
+private boolean checkObGemueseAnbaubar(GemueseTyp angebautGemüse, GemueseTyp gemüseTyp) {
+    if (angebautGemüse.getGemüsename().equals(angebautGemüse.getGemüsename())) {
+        if (this.angebaut == null) {
+            this.angebaut = gemüseTyp;
+            this.wachstumsstatus ++;
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+
+### 7.2.4 Rename Method (aus der Vorlesung)
+Die Funktion  muss umbenannt werden, da der Name verwirrend ist. Es wird ebenfalls geprüft, ob es erlaubt ist ein Gemüse auf das Feld anzubauen.
+
+**vorher:**
+```java
+public boolean baueGemüseAn(GemueseTyp gemüse) {
+    for (GemueseTyp gemueseTyp : this.anbaubaresgemüse) {
+        return checkObGemueseAnbaubar(gemueseTyp, gemüse);
+    }
+    return false;
+}
+```
+
+**nachher:**
+```java
+public boolean versucheGemüseAnzubauen(GemueseTyp gemüse) {
+    for (GemueseTyp gemueseTyp : this.anbaubaresgemüse) {
+        return checkObGemueseAnbaubar(gemueseTyp, gemüse);
+    }
+    return false;
+}
+```
+
 # 8. Design Patterns
 Beide Design Patterns sind nach dem [CommitID](https://github.com/manuel-brs/Queensfarming/commit/aa9a3bd7b227b589537f838066d1572c77a0b08b)*aa9a3bd7b227b589537f838066d1572c77a0b08b* wieder entfernt worden. Somit können die beiden Design patterns durch git checkout CommitID angeschaut werden.
 

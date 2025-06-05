@@ -15,14 +15,19 @@ abstract public class BebaubareKachel extends Kachel {
         this.symbol = symbol;
     }
 
-    public boolean baueGemüseAn(GemueseTyp gemüse) {
+    public boolean versucheGemüseAnzubauen(GemueseTyp gemüse) {
         for (GemueseTyp gemueseTyp : this.anbaubaresgemüse) {
-            if (gemueseTyp.getGemüsename().equals(gemueseTyp.getGemüsename())) {
-                if (this.angebaut == null) {
-                    this.angebaut = gemüse;
-                    this.wachstumsstatus ++;
-                    return true;
-                }
+            return checkObGemueseAnbaubar(gemueseTyp, gemüse);
+        }
+        return false;
+    }
+
+    private boolean checkObGemueseAnbaubar(GemueseTyp angebautGemüse, GemueseTyp gemüseTyp) {
+        if (angebautGemüse.getGemüsename().equals(angebautGemüse.getGemüsename())) {
+            if (this.angebaut == null) {
+                this.angebaut = gemüseTyp;
+                this.wachstumsstatus ++;
+                return true;
             }
         }
         return false;
